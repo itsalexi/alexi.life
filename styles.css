@@ -1,0 +1,217 @@
+@import url("https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap");
+:root {
+  --f-size: 10;
+  --f-unit: 1vmin;
+  --f: calc(var(--f-size) * var(--f-unit));
+  --bg: #181717;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+#discordButton {
+  border: none;
+  background: none;
+}
+body {
+  font-family: "Patrick Hand", cursive;
+  font-size: var(--f);
+  background-color: var(--bg);
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+}
+
+img:hover {
+  transform: scale(1.2);
+  transition: 0.1s;
+}
+
+#footer {
+  bottom: 0;
+  text-align: center;
+  margin-top: auto;
+  color: white;
+  padding: 5px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.orange {
+  color: orange;
+}
+
+#alexi {
+  font-size: 96px;
+  color: cyan;
+}
+
+#main {
+  font-size: 1.5rem;
+  font-weight: 100;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin-top: 20px;
+  gap: 25px;
+}
+
+img {
+  width: 100px;
+  height: 70px;
+}
+
+p {
+  line-height: 0.75;
+  margin: auto;
+  color: #1af0dc;
+  text-align: center;
+  transform: scaleX(var(--scale, 1));
+  animation: glitch-p 11s infinite alternate;
+}
+p::before,
+p::after {
+  --top: 0;
+  --left: 0;
+  --v-height: 30%;
+  --n-tenth: calc(var(--f-size) * 0.1 * var(--top));
+  --t-cut: calc(var(--n-tenth) / var(--f-size) * 100%);
+  --b-cut: calc(var(--t-cut) + var(--v-height));
+  content: attr(data-text);
+  position: absolute;
+  width: 100%;
+  left: 0;
+  text-align: center;
+  transform: translateX(calc(var(--left) * 100%));
+  filter: drop-shadow(0 0 transparent);
+  text-shadow: calc(var(--left) * -3em) 0 0.02em lime,
+    calc(var(--left) * -6em) 0 0.02em #ff00e1;
+  background-color: var(--bg);
+  clip-path: polygon(
+    0% var(--t-cut),
+    100% var(--t-cut),
+    100% var(--b-cut),
+    0% var(--b-cut)
+  );
+}
+p::before {
+  animation: glitch-b 1.7s infinite alternate-reverse;
+}
+p::after {
+  animation: glitch-a 3.1s infinite alternate;
+}
+
+@keyframes glitch-p {
+  17% {
+    --scale: 0.87;
+  }
+  31% {
+    --scale: 1.1;
+  }
+  37% {
+    --scale: 1.3;
+  }
+  47% {
+    --scale: 0.91;
+  }
+  87% {
+    --scale: 1;
+  }
+}
+@keyframes glitch-a {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    --top: 0;
+    --left: 0;
+  }
+  0% {
+    --v-height: 15%;
+  }
+  20% {
+    --left: 0.005;
+  }
+  40% {
+    --left: 0.01;
+    --v-height: 20%;
+    --top: 3;
+  }
+  60% {
+    --left: 0.03;
+    --v-height: 25%;
+    --top: 6;
+  }
+  80% {
+    --left: 0.07;
+    --v-height: 5%;
+    --top: 8;
+  }
+  100% {
+    --left: 0.083;
+    --v-height: 30%;
+    --top: 1;
+  }
+}
+@keyframes glitch-b {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    --top: 0;
+    --left: 0;
+  }
+  0% {
+    --v-height: 15%;
+    --top: 10;
+  }
+  20% {
+    --left: -0.005;
+  }
+  40% {
+    --left: -0.01;
+    --v-height: 17%;
+    --top: 3;
+  }
+  60% {
+    --left: -0.03;
+    --v-height: 35%;
+    --top: 6;
+  }
+  80% {
+    --left: -0.07;
+    --v-height: 5%;
+    --top: 8;
+  }
+  100% {
+    --left: -0.083;
+    --v-height: 30%;
+    --top: 1;
+  }
+}
