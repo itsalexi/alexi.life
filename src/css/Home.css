@@ -28,12 +28,14 @@
 }
 
 .home-title {
+    font-family: 'Cubano';
     font-size: 2em;
     font-weight: 600;
     text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
 }
 
 .avatar-name {
+    font-family: 'Cubano';
     color: yellow;
 }
 

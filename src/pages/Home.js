@@ -10,7 +10,7 @@ import { Tooltip } from '@mui/material';
 const Home = () => {
     return (
         <div className="home">
-            <Snowfall snowflakeCount={50}/>
+            <Snowfall snowflakeCount={50} />
             <div className="home-information">
                 <h1 className="home-title hover">
                     Hey, I'm <span className="avatar-name hover">Alexi</span>{' '}
@@ -46,6 +46,7 @@ const Home = () => {
                         <a
                             href="https://twitter.com/itsalexitw"
                             target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <img
                                 src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/twitter.svg"
@@ -59,6 +60,7 @@ const Home = () => {
                         <a
                             href="https://github.com/itsalexi"
                             target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <img
                                 src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/github.svg"

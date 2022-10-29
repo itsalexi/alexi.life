@@ -31,12 +31,14 @@
 }
 
 .card-title {
+    font-family: 'Cubano';
     text-align: center;
     font-size: 2em;
 }
 
 .card-desc {
     font-size: 1.25em;
+    text-align: justify;
 }
 
 .card-hobbies {
@@ -46,7 +48,7 @@
 .skill-cards {
     display: grid;
     gap: 2em;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .skill-card {
@@ -61,6 +63,8 @@
     font-weight: bold;
     color: rgb(207, 73, 225);
     cursor: pointer;
+    font-family: 'Cubano';
+
 }
 
 .skill-card:hover {
@@ -75,12 +79,15 @@
         width: 40vh;
     }
 
-    .skill-cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     .about {
         height: 220vh;
+    }
+    html {
+        font-size: 85%;
+    }
+
+    .skill-cards {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
 }
 
