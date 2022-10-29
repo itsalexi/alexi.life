@@ -38,6 +38,7 @@
 
 .card-desc {
     font-size: 1.25em;
+    color: white;
     text-align: justify;
 }
 
@@ -45,17 +46,27 @@
     padding-left: 3em;
 }
 
+.card-hobby {
+    color: white;
+}
+
+.highlight {
+    color: rgb(236, 249, 90);
+}
+
 .skill-cards {
     display: grid;
     gap: 2em;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    justify-items: center;
 }
 
 .skill-card {
     border: 2px solid rgb(150, 35, 165);
     font-size: 5em;
-    padding: 0.25em;
-    width: 2em;
+    padding: 0.5em 0.8em;
+    width: 2.5em;
+    border-radius: 0.1em;
 }
 
 .skills-scroll {
@@ -64,33 +75,67 @@
     color: rgb(207, 73, 225);
     cursor: pointer;
     font-family: 'Cubano';
-
 }
 
 .skill-card:hover {
-    border: 2px solid rgb(151, 53, 164);
-    transform: scale(1.2);
-    transition: all 0.5s ease;
+    border: 2px solid rgb(215, 117, 228);
+    transform: scale(1.05);
+    transition: all 0.25s ease;
+}
+
+@media (max-width: 420px) {
+    .skill-cards {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 1024px) {
+    .skill-cards {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .skills-information {
+        width: 45vh;
+    }
+
+    .card-information {
+        width: 45vh;
+    }
 }
 
 @media (max-width: 550px) {
     .card-information,
     .skills-information {
-        width: 40vh;
+        width: 50vh;
     }
-
     .about {
         height: 220vh;
     }
     html {
-        font-size: 85%;
+        font-size: 75%;
     }
 
+    .skill-card {
+        width: 2.25em;
+    }
+    .skill-cards {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .card-information,
+    .skills-information {
+        width: 40vh;
+    }
+
+    .card-information {
+        width: 80%;
+    }
     .skill-cards {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     }
 }
-
 svg {
     height: auto;
     width: auto;

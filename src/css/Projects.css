@@ -18,8 +18,6 @@
     flex-direction: column;
     width: 400px;
     border-radius: 1em;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-        rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
 .project:hover {
@@ -34,7 +32,7 @@
     display: grid;
     justify-items: center;
     justify-content: center;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
     gap: 2em;
 }
 
@@ -44,11 +42,12 @@
     display: flex;
     border-bottom-left-radius: inherit;
     border-bottom-right-radius: inherit;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
 .project-image {
     width: inherit;
-    min-height: 165px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
         rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     border-top-left-radius: inherit;
@@ -126,11 +125,14 @@
 
 .project-button:hover {
     cursor: pointer;
-    transform: scale(1.1);
+    transform: scale(1.2);
     transition: all 0.3s;
 }
 @media (max-width: 550px) {
     .project {
         width: 300px;
+    }
+    .project-tech {
+        font-size: 0.8em;
     }
 }

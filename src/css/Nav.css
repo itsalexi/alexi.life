@@ -22,7 +22,6 @@
     user-select: none;
     cursor: pointer;
     font-family: 'Cubano';
-
 }
 
 .un {
@@ -46,7 +45,7 @@
 
 .navbar-name {
     font-family: 'Cubano';
-
+    user-select: none;
     padding-left: 1em;
 }
 
