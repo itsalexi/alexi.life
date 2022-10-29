@@ -1,0 +1,90 @@
+.about {
+    background: url('../assets/wallpaper2.jpg');
+    min-height: 200vh;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.6);
+    background-blend-mode: multiply;
+    background-position: center;
+    display: grid;
+    place-items: center;
+    color: white;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+
+.about-information {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5em;
+    width: 100%;
+}
+.card-information,
+.skills-information {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: 60vh;
+}
+
+.skills-information {
+    width: 100vh;
+}
+
+.card-title {
+    text-align: center;
+    font-size: 2em;
+}
+
+.card-desc {
+    font-size: 1.25em;
+}
+
+.card-hobbies {
+    padding-left: 3em;
+}
+
+.skill-cards {
+    display: grid;
+    gap: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.skill-card {
+    border: 2px solid rgb(150, 35, 165);
+    font-size: 5em;
+    padding: 0.25em;
+    width: 2em;
+}
+
+.skills-scroll {
+    text-align: center;
+    font-weight: bold;
+    color: rgb(207, 73, 225);
+    cursor: pointer;
+}
+
+.skill-card:hover {
+    border: 2px solid rgb(151, 53, 164);
+    transform: scale(1.2);
+    transition: all 0.5s ease;
+}
+
+@media (max-width: 550px) {
+    .card-information,
+    .skills-information {
+        width: 40vh;
+    }
+
+    .skill-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about {
+        height: 220vh;
+    }
+}
+
+svg {
+    height: auto;
+    width: auto;
+}

@@ -1,0 +1,110 @@
+.home {
+    min-height: 100vh;
+    background: url('../assets/wallpaper.jpg');
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.6);
+    background-blend-mode: multiply;
+    display: grid;
+    place-items: center;
+    color: white;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-wrapper {
+    border-radius: 50%;
+    width: 20em;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+        rgba(0, 0, 0, 0.22) 0px 15px 12px;
+}
+
+.avatar-wrapper img {
+    border-radius: inherit;
+    width: inherit;
+}
+
+.hover:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
+
+.home-title {
+    font-size: 2em;
+    font-weight: 600;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-name {
+    color: yellow;
+}
+
+.home-information {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 1em;
+}
+
+.typewriter-text {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.home-desc {
+    text-align: center;
+    font-size: 2em;
+}
+
+@media (max-width: 550px) {
+    .typewriter-text {
+        font-size: 0.8em;
+    }
+}
+
+/* Waving Hand https://codepen.io/jakejarvis/pen/pBZWZw */
+
+.wave {
+    animation-name: wave-animation; /* Refers to the name of your @keyframes element below */
+    animation-duration: 2.5s; /* Change to speed up or slow down */
+    animation-iteration-count: infinite; /* Never stop waving :) */
+    transform-origin: 70% 70%; /* Pivot around the bottom-left palm */
+    display: inline-block;
+}
+
+.home-social-links {
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+}
+
+.social-media-link:hover {
+    transform: scale(1.5) rotate(360deg);
+    transition: all 0.5s;
+    cursor: pointer;
+}
+
+@keyframes wave-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    10% {
+        transform: rotate(14deg);
+    }
+    20% {
+        transform: rotate(-8deg);
+    }
+    30% {
+        transform: rotate(14deg);
+    }
+    40% {
+        transform: rotate(-4deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+    60% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}

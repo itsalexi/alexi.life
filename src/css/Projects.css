@@ -1,0 +1,11 @@
+.projects {
+    background: url('../assets/wallpaper3.jpg');
+    min-height: 100vh;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.6);
+    background-blend-mode: multiply;
+    display: grid;
+    place-items: center;
+    color: white;
+    text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+}
