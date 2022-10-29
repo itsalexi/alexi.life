@@ -24,7 +24,7 @@ const Projects = () => {
             tech: ['HTML', 'CSS', 'React', 'JavaScript'],
             image:
                 'https://camo.githubusercontent.com/19ede2192e8a1dae046183df5b52934c490ec56874bde55c22d1d317819aade2/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f313032333137383339393837363930373038382f313032333138303133343532373831313538342f53637265656e5f53686f745f323032322d30392d32345f61745f362e33322e32305f504d2e706e673f77696474683d31303831266865696768743d353338',
-            live: 'https://itsalexi.github.io/Shopping-Website/',
+            live: 'https://alexi.life/projects/Shopping-Website/',
             repo: 'https://github.com/itsalexi/Shopping-Website',
         },
         {
@@ -44,7 +44,7 @@ const Projects = () => {
             tech: ['HTML', 'CSS', 'React', 'JavaScript'],
             image:
                 'https://media.discordapp.net/attachments/1031098628804182076/1035909078150557696/Screen_Shot_2022-10-29_at_9.32.44_PM.png?width=2032&height=1005',
-            live: 'https://itsalexi.github.io/Memory-Card/',
+            live: 'https://alexi.life/projects/Memory-Card/',
             repo: 'https://github.com/itsalexi/Memory-Card',
         },
         {
@@ -54,7 +54,7 @@ const Projects = () => {
             tech: ['HTML', 'CSS', 'React', 'JavaScript'],
             image:
                 'https://camo.githubusercontent.com/6cb2600722f76b02b4a06cbccf94e4a0ba2e7bdfbf256a43b2c8ec092325f8ee/68747470733a2f2f692e6962622e636f2f325a37717654562f696d6167652d323032322d30382d32362d3137323133393930362e706e67',
-            live: 'https://itsalexi.github.io/CV-Creator/',
+            live: 'https://alexi.life/projects/CV-Creator/',
             repo: 'https://github.com/itsalexi/CV-Creator',
         },
         {
@@ -64,7 +64,7 @@ const Projects = () => {
             tech: ['HTML', 'CSS', 'JavaScript'],
             image:
                 'https://camo.githubusercontent.com/afd5e37c39bf7177e7086b321b38539cf624f3ec851ee87a59cefa8ea59795d2/68747470733a2f2f692e6962622e636f2f4438474a786a422f696d6167652d323032322d30382d30312d3138323632373539362e706e67',
-            live: 'https://itsalexi.github.io/Weather/',
+            live: 'https://alexi.life/projects/Weather/',
             repo: 'https://github.com/itsalexi/Weather',
         },
     ];
