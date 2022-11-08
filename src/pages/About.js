@@ -34,14 +34,9 @@ const About = () => {
                             <span className="highlight">YouTube</span>
                         </li>
                         <li className="card-hobby">
-                            <span
-                                style={{
-                                    color: 'red',
-                                    'text-decoration': 'line-through',
-                                }}
-                            >
+                            <span className="strikethrough">
                                 <span className="card-hobby">
-                                    &nbsp;Going to{' '}
+                                    Going to{' '}
                                     <span className="highlight">school</span>
                                     &nbsp;
                                 </span>

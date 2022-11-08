@@ -54,6 +54,11 @@
     color: rgb(236, 249, 90);
 }
 
+.strikethrough:hover {
+    color: red;
+    text-decoration: line-through;
+}
+
 .skill-cards {
     display: grid;
     gap: 2em;
