@@ -1,6 +1,6 @@
 .about {
     background: url('../assets/wallpaper2.jpg');
-    min-height: 200vh;
+    min-height: 300vh;
     background-size: cover;
     background-color: rgba(0, 0, 0, 0.6);
     background-blend-mode: multiply;
@@ -144,4 +144,18 @@
 svg {
     height: auto;
     width: auto;
+}
+
+/* award information */
+
+.award-information {
+    height: 100vh;
+}
+
+.card-desc.awards {
+    text-align: center;
+}
+
+.small-text {
+    font-size: 0.2em;
 }

@@ -55,6 +55,29 @@ const About = () => {
                     </p>
                 </div>
             </div>
+
+            <div className="award-information">
+                <div className="card-information">
+                    <h2 className="card-title">Awards and Achievements</h2>
+                    <p className="card-desc awards">
+                        An overview of my awards and honors during my time in
+                        high school
+                    </p>
+                    <ul className="card-desc">
+                        <li className="card-hobby">
+                            Consistent{' '}
+                            <span className="highlight">Honor Student</span>{' '}
+                            <span className="small-text">(so far)</span>
+                        </li>
+                        <li className="card-hobby">
+                            Completed{' '}
+                            <span className="highlight">Junior HS</span> and
+                            moved up to <span className="highlight">SHS</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
             <div className="skills-information" ref={skills}>
                 <h2 className="card-title">My Skills</h2>
                 <div className="skill-cards">
