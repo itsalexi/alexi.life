@@ -26,7 +26,7 @@
 
 .un {
     padding-bottom: 5px;
-    background-image: linear-gradient(rgb(0, 255, 72) 0 0);
+    background-image: linear-gradient(rgb(0, 221, 255) 0 0);
     background-position: 0 100%; /*OR bottom left*/
     background-size: 0% 5px;
     background-repeat: no-repeat;
