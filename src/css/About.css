@@ -1,6 +1,6 @@
 .about {
     background: url('../assets/wallpaper2.jpg');
-    min-height: 200vh;
+    min-height: 100%;
     background-size: cover;
     background-color: rgba(0, 0, 0, 0.6);
     background-blend-mode: multiply;
@@ -17,16 +17,18 @@
     align-items: center;
     gap: 5em;
     width: 100%;
+    height: 100vh;
 }
 .card-information,
 .skills-information {
     display: flex;
     flex-direction: column;
     gap: 1em;
-    width: 60vh;
+    width: 80vh;
 }
 
 .skills-information {
+    height: 100vh;
     width: 100vh;
 }
 
@@ -86,6 +88,29 @@
     border: 2px solid rgb(215, 117, 228);
     transform: scale(1.05);
     transition: all 0.25s ease;
+}
+
+/* award information */
+
+.award-information {
+    height: 100vh;
+}
+
+.card-desc.awards {
+    text-align: center;
+}
+
+.small-text {
+    font-size: 0.75em;
+    text-align: center;
+}
+
+.list-divider {
+    list-style-type: none;
+}
+a {
+    color: lightblue;
+    text-decoration: none;
 }
 
 @media (max-width: 420px) {
