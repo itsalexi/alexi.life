@@ -24,7 +24,7 @@ const Home = () => {
                 </div>
 
                 <div className="home-desc hover">
-                    <span className="typewriter-text ">
+                    <span className="typewriter-text">
                         <Typewriter
                             words={[
                                 "Welcome to my portfolio!",
