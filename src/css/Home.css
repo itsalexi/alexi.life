@@ -24,6 +24,9 @@
 
 .hover:hover {
     transform: scale(1.05);
+}
+
+.hover {
     transition: transform 0.2s;
 }
 
@@ -43,12 +46,14 @@
     display: flex;
     flex-direction: column;
     text-align: center;
+    align-items: center;
     gap: 1em;
+    width: 100vw;
 }
 
 .typewriter-text {
     font-weight: bold;
-    font-size: 0.9em;
+    font-size: 0.86em;
 }
 
 .home-desc {
@@ -78,10 +83,17 @@
     justify-content: center;
 }
 
-.social-media-link:hover {
-    transform: scale(1.5) rotate(360deg);
+.social-media-link {
     transition: all 0.5s;
+}
+
+.social-media-link:hover {
+    transform: scale(1.5) rotate(5deg);
     cursor: pointer;
+}
+
+.typewriter-text span {
+    color: #ff7575;
 }
 
 @keyframes wave-animation {

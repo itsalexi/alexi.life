@@ -8,6 +8,16 @@ const openInNewTab = (url) => {
 const Projects = () => {
     const projects = [
         {
+            name: 'Sharespace',
+            desc:
+                'A social media blogging platform like Medium and Dev.to! You have the ability to like, share, comment on every post!',
+            tech: ['HTML', 'CSS', 'React', 'Firebase', 'NextJS'],
+            image:
+                'https://cdn.discordapp.com/attachments/1031098628804182076/1040857388376408064/opera_OjhSHRwQG1.png',
+            live: 'https://sharespace.alexi.life',
+            repo: 'https://github.com/itsalexi/Sharespace',
+        },
+        {
             name: 'Discord Clone',
             desc:
                 'A discord clone with full authentication and realtime chat messaging powered by Firebase.',

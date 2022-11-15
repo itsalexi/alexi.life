@@ -27,6 +27,8 @@ const Home = () => {
                     <span className="typewriter-text ">
                         <Typewriter
                             words={[
+                                "Welcome to my portfolio!",
+                                "Explore the site to learn more about me!",
                                 "I'm 15 years old!",
                                 "I'm a web developer!",
                                 "I'm from the Philippines!",
@@ -35,8 +37,8 @@ const Home = () => {
                             ]}
                             loop={0}
                             cursor
-                            typeSpeed={70}
-                            deleteSpeed={100}
+                            typeSpeed={75}
+                            deleteSpeed={50}
                         />
                     </span>
                 </div>

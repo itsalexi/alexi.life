@@ -5,3 +5,12 @@
     font-family: 'Sofia Pro';
     color: cyan;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.project-tech.nextjs {
+    background-color: black;
+    color: white;
+}

@@ -3,6 +3,7 @@ import Snowfall from 'react-snowfall';
 import { Tooltip } from '@mui/material';
 
 import '../css/About.css';
+import { Link } from 'react-router-dom';
 
 const About = () => {
     const skills = useRef();
@@ -21,6 +22,22 @@ const About = () => {
                         11 STEM student, and plan to take{' '}
                         <span className="highlight">Computer Science</span> in
                         the future.
+                    </p>
+                    <p className="card-desc">
+                        {' '}
+                        Ever since I was{' '}
+                        <span className="highlight">young</span>, I've always
+                        wanted to <span className="highlight">learn</span> how
+                        to code. It all{' '}
+                        <span className="highlight">started</span> when I was
+                        about <span className="highlight">~7 years old</span>{' '}
+                        and I walked in to my{' '}
+                        <span className="highlight">aunts and uncles</span>{' '}
+                        working on a project and my younger self was{' '}
+                        <span className="highlight">
+                            enticed and interested
+                        </span>{' '}
+                        on what they were doing.
                     </p>
                     <p className="card-desc">Aside from coding, I also love:</p>
                     <ul className="card-hobbies card-desc">
@@ -43,18 +60,71 @@ const About = () => {
                             </span>
                         </li>
                     </ul>
-                    <p
-                        className="skills-scroll"
-                        onClick={() => {
-                            skills.current.scrollIntoView({
-                                behavior: 'smooth',
-                            });
-                        }}
-                    >
-                        Click me to scroll down to skills
-                    </p>
                 </div>
             </div>
+
+            <div className="award-information">
+                <div className="card-information">
+                    <h2 className="card-title">Awards and Achievements</h2>
+                    <p className="card-desc awards">
+                        An overview of my academic and extracurricular awards
+                        achievements during my life so far.
+                    </p>
+                    <ul className="card-desc">
+                        <li className="card-hobby">
+                            Consistent{' '}
+                            <span className="highlight">Honor Student</span>{' '}
+                            throughout High School.
+                        </li>
+                        <br />
+                        <li className="card-hobby">
+                            Completed{' '}
+                            <span className="highlight">Junior HS</span> and
+                            moved up to{' '}
+                            <span className="highlight">Senior HS</span>.
+                        </li>
+                        <br />
+                        <li className="card-hobby">
+                            Completed 80% of the{' '}
+                            <span className="highlight">JavaScript</span> course
+                            on{' '}
+                            <span className="highlight">
+                                <a
+                                    href="https://theodinproject.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    TheOdinProject
+                                </a>
+                                .
+                            </span>
+                        </li>
+                        <br />
+                        <li className="card-hobby">
+                            Finished my final{' '}
+                            <span className="highlight">
+                                JavaScript Project!{' '}
+                            </span>
+                            a{' '}
+                            <a
+                                href="https://alexi.life/projects/discord-clone"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Discord Clone
+                            </a>
+                            .
+                        </li>
+                        <br />
+                        <li className="card-hobby">
+                            Built many <Link to="/projects">projects</Link>{' '}
+                            while learning{' '}
+                            <span className="highlight">how to code</span>!
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
             <div className="skills-information" ref={skills}>
                 <h2 className="card-title">My Skills</h2>
                 <div className="skill-cards">
@@ -115,6 +185,7 @@ const About = () => {
                         />
                     </Tooltip>
                 </div>
+                <div className="small-text">and I am still learning more..</div>
             </div>
         </div>
     );
