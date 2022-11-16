@@ -124,7 +124,8 @@ a {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
-    .skills-information {
+    .skills-information,
+    .award-information {
         width: 45vh;
     }
 
@@ -135,7 +136,8 @@ a {
 
 @media (max-width: 550px) {
     .card-information,
-    .skills-information {
+    .skills-information,
+    .award-information {
         width: 50vh;
     }
     .about {
@@ -155,7 +157,8 @@ a {
 
 @media (max-width: 480px) {
     .card-information,
-    .skills-information {
+    .skills-information,
+    .award-information {
         width: 40vh;
     }
 
