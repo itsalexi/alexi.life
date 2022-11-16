@@ -94,6 +94,7 @@
 
 .award-information {
     height: 100vh;
+    width: 100%;
 }
 
 .card-desc.awards {
@@ -140,9 +141,7 @@ a {
     .award-information {
         width: 50vh;
     }
-    .about {
-        height: 220vh;
-    }
+    
     html {
         font-size: 75%;
     }
