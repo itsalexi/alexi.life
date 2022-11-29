@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/static/css/main.80068503.css",
-    "main.js": "/static/js/main.9a1332a9.js",
-    "index.html": "/index.html",
-    "main.80068503.css.map": "/static/css/main.80068503.css.map",
-    "main.9a1332a9.js.map": "/static/js/main.9a1332a9.js.map"
+    "main.css": "/projects/freedom-wall/static/css/main.80068503.css",
+    "main.js": "/projects/freedom-wall/static/js/main.00d30f62.js",
+    "index.html": "/projects/freedom-wall/index.html",
+    "main.80068503.css.map": "/projects/freedom-wall/static/css/main.80068503.css.map",
+    "main.00d30f62.js.map": "/projects/freedom-wall/static/js/main.00d30f62.js.map"
   },
   "entrypoints": [
     "static/css/main.80068503.css",
-    "static/js/main.9a1332a9.js"
+    "static/js/main.00d30f62.js"
   ]
 }
