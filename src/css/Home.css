@@ -46,12 +46,14 @@
     display: flex;
     flex-direction: column;
     text-align: center;
+    align-items: center;
     gap: 1em;
+    width: 100vw;
 }
 
 .typewriter-text {
     font-weight: bold;
-    font-size: 0.9em;
+    font-size: 0.86em;
 }
 
 .home-desc {
