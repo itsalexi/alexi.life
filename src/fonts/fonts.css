@@ -1,3 +1,164 @@
-@import url('https://fonts.cdnfonts.com/css/cubano');
+@font-face {
+    font-family: 'Cubano';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Cubano'),
+        url('https://fonts.cdnfonts.com/s/62904/Cubano.woff') format('woff');
+}
+@font-face {
+    font-family: 'L';
+    font-style: normal;
+    font-weight: 5;
+    src: local('L'),
+        url('https://fonts.cdnfonts.com/s/62904/L Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'O';
+    font-style: normal;
+    font-weight: 5;
+    src: local('O'),
+        url('https://fonts.cdnfonts.com/s/62904/O Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'P';
+    font-style: normal;
+    font-weight: 5;
+    src: local('P'),
+        url('https://fonts.cdnfonts.com/s/62904/P Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'R';
+    font-style: normal;
+    font-weight: 5;
+    src: local('R'),
+        url('https://fonts.cdnfonts.com/s/62904/R Regular.woff') format('woff');
+}
 
-@import url('https://fonts.cdnfonts.com/css/sofia-pro');
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 400;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Regular Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 400;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Regular Italic Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 250;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro ExtraLight Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 250;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro UltraLight Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 250;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro ExtraLight Italic Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 250;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro UltraLight Italic Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Light Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 300;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Light Italic Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 500;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Medium Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 500;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Medium Italic Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 600;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Semi Bold Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 600;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Semi Bold Italic Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 700;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Bold Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 700;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Bold Italic Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: normal;
+    font-weight: 900;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Black Az.woff')
+            format('woff');
+}
+@font-face {
+    font-family: sofia pro;
+    font-style: italic;
+    font-weight: 900;
+    src: local('Sofia Pro'),
+        url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Black Italic Az.woff')
+            format('woff');
+}
