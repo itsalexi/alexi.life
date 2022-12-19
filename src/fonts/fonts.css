@@ -1,2 +1,23 @@
 @import url('https://fonts.cdnfonts.com/css/sofia-pro');
 @import url('https://fonts.cdnfonts.com/css/cubano');
+
+@font-face {
+    font-family: 'Cubano';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Cubano'), url('Cubano.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Sofia Pro'), url('Sofia Pro Regular Az.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Sofia Pro'), url('Sofia Pro Bold Az.woff') format('woff');
+}
