@@ -17,11 +17,11 @@ const About = () => {
                     <p className="card-desc">
                         Hi! My name is <span className="highlight">Alexi</span>,
                         and I'm from the{' '}
-                        <span className="highlight">Philippines</span>. I'm 15
-                        years old, turning 16 this year. I'm currently a Grade
-                        11 STEM student, and plan to take{' '}
-                        <span className="highlight">Computer Science</span> in
-                        the future.
+                        <span className="highlight">Philippines</span>. As of
+                        2023, I'm now 16 years old! I'm currently a Grade 11
+                        STEM student, and plan to graduate with a degree in{' '}
+                        <span className="highlight">Computer Science</span> when
+                        I graduate senior high school.
                     </p>
                     <p className="card-desc">
                         {' '}
