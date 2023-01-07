@@ -2,7 +2,8 @@ import React from 'react';
 import Snowfall from 'react-snowfall';
 import Tech from '../components/Tech';
 import '../css/Projects.css';
-import Wallpaper3 from '../assets/wallpaper.jpg';
+import Wallpaper3 from '../assets/wallpaper3.jpg';
+import { Parallax, ParallaxLayer } from '@react-spring/parallax';
 
 const openInNewTab = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -70,64 +71,92 @@ const Projects = () => {
 
     return (
         <div className="projects">
-            <Snowfall snowflakeCount={50} />
-            <div className="projects-main-title">Projects</div>
-            <div className="projects-list">
-                {projects.map((project) => {
-                    return (
-                        <div className="project">
-                            <img
-                                className="project-image"
-                                src={project.image}
-                                alt="project"
-                            />
-                            <div className="project-box">
-                                <div className="project-info">
-                                    <div className="project-title">
-                                        {project.name}
-                                    </div>
-                                    <div className="project-stack">
-                                        {project.tech.map((tech) => {
-                                            return (
-                                                <Tech
-                                                    name={tech.toLowerCase()}
-                                                />
-                                            );
-                                        })}
-                                    </div>
-                                    <div className="project-desc">
-                                        {project.desc}
-                                    </div>
-                                    <div className="project-buttons">
-                                        <div
-                                            className="project-button live"
-                                            onClick={() =>
-                                                openInNewTab(project.live)
-                                            }
-                                        >
-                                            <span role="img" aria-label="try">
-                                                📥
-                                            </span>{' '}
-                                            TRY
-                                        </div>
-                                        <div
-                                            className="project-button repo"
-                                            onClick={() =>
-                                                openInNewTab(project.repo)
-                                            }
-                                        >
-                                            <span role="img" aria-label="repo">
-                                                🖥️
-                                            </span>{' '}
-                                            REPO
+            <Parallax pages="2">
+                <ParallaxLayer
+                    factor={3}
+                    style={{
+                        backgroundImage: `url(${Wallpaper3})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }}
+                    className="tint"
+                    speed={0.75}
+                >
+                    <Snowfall snowflakeCount={100} />
+                </ParallaxLayer>
+
+                <ParallaxLayer offset={0.1} speed={1.25}>
+                    <div className="projects-main-title center-align">
+                        Projects
+                    </div>
+                    <div className="projects-list">
+                        {projects.map((project) => {
+                            return (
+                                <div className="project">
+                                    <img
+                                        className="project-image"
+                                        src={project.image}
+                                        alt="project"
+                                    />
+                                    <div className="project-box">
+                                        <div className="project-info">
+                                            <div className="project-title">
+                                                {project.name}
+                                            </div>
+                                            <div className="project-stack">
+                                                {project.tech.map((tech) => {
+                                                    return (
+                                                        <Tech
+                                                            name={tech.toLowerCase()}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                            <div className="project-desc">
+                                                {project.desc}
+                                            </div>
+                                            <div className="project-buttons">
+                                                <div
+                                                    className="project-button live"
+                                                    onClick={() =>
+                                                        openInNewTab(
+                                                            project.live
+                                                        )
+                                                    }
+                                                >
+                                                    <span
+                                                        role="img"
+                                                        aria-label="try"
+                                                    >
+                                                        📥
+                                                    </span>{' '}
+                                                    TRY
+                                                </div>
+                                                <div
+                                                    className="project-button repo"
+                                                    onClick={() =>
+                                                        openInNewTab(
+                                                            project.repo
+                                                        )
+                                                    }
+                                                >
+                                                    <span
+                                                        role="img"
+                                                        aria-label="repo"
+                                                    >
+                                                        🖥️
+                                                    </span>{' '}
+                                                    REPO
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+                            );
+                        })}
+                    </div>
+                </ParallaxLayer>
+            </Parallax>
         </div>
     );
 };

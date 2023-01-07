@@ -14,23 +14,20 @@ const About = () => {
 
     return (
         <div className="about">
-            <Parallax pages={2}>
-                <ParallaxLayer sticky={{ start: 0, end: 3 }}>
-                    <Snowfall snowflakeCount={50} />
-                </ParallaxLayer>
+            <Parallax pages={2.15}>
                 <ParallaxLayer
-                    factor={3}
+                    factor={3.3}
                     style={{
                         backgroundImage: `url(${Wallpaper2})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}
                     className="tint"
-                    speed={0.75}
+                    speed={1}
                 >
-                    {' '}
+                    <Snowfall snowflakeCount={100} />{' '}
                 </ParallaxLayer>
-                <ParallaxLayer offset={0} className="center-align" speed={1}>
+                <ParallaxLayer offset={0} className="center-align" speed={0.75}>
                     <div className="about-information">
                         <div className="card-information">
                             <h2 className="card-title">Who am I?</h2>
@@ -101,7 +98,7 @@ const About = () => {
                 <ParallaxLayer
                     offset={0.9}
                     className="center-align"
-                    speed={1.25}
+                    speed={0.75}
                 >
                     <div className="award-information">
                         <div className="card-information">
@@ -176,7 +173,11 @@ const About = () => {
                         </div>
                     </div>
                 </ParallaxLayer>
-                <ParallaxLayer offset={1.1} className="center-align" speed={1}>
+                <ParallaxLayer
+                    offset={1.1}
+                    className="center-align"
+                    speed={0.75}
+                >
                     <div className="skills-information" ref={skills}>
                         <h2 className="card-title">My Skills</h2>
                         <div className="skill-cards">
