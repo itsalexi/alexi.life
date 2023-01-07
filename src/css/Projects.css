@@ -1,10 +1,5 @@
 .projects {
-    padding-top: 5em;
-    background: url('../assets/wallpaper3.jpg');
     min-height: 100vh;
-    background-size: cover;
-    background-color: rgba(0, 0, 0, 0.6);
-    background-blend-mode: multiply;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -97,8 +92,6 @@
 .project-tech.firebase {
     background-color: orange;
 }
-
-
 
 .project-tech.nextjs {
     background-color: black;
