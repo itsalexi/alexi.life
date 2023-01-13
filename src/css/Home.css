@@ -93,7 +93,9 @@
 }
 
 .typewriter-text span {
-    color: #ff7575;
+    color: #eaafaf;
+    font-family: 'Cubano';
+
 }
 
 @keyframes wave-animation {

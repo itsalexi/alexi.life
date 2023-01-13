@@ -84,26 +84,42 @@ const Projects = () => {
             <div className="projects">
                 <Parallax pages="2">
                     <ParallaxLayer
-                        factor={3}
+                        factor={2.25}
                         style={{
                             backgroundImage: `url(${Wallpaper3})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
                         className="tint"
-                        speed={0.75}
+                        speed={0.25}
                     >
                         <Snowfall snowflakeCount={100} />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={0.1} speed={1.25}>
+                    <ParallaxLayer offset={0.1} speed={2}>
                         <div className="projects-main-title center-align">
-                            Projects
+                            PROJECTS
                         </div>
+                        <p className="projects-main-info center-align">
+                            some of my favorite projects that I've built, check
+                            them out!
+                        </p>
+                        <p
+                            className="projects-main-info"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() =>
+                                openInNewTab(
+                                    'https://github.com/itsalexi?tab=repositories'
+                                )
+                            }
+                        >
+                            <span>@itsAlexi</span> on Github
+                        </p>
+
                         <div className="projects-list">
                             {projects.map((project) => {
                                 return (
-                                    <div className="project">
+                                    <div className="project" key={project.name}>
                                         <img
                                             className="project-image"
                                             src={project.image}

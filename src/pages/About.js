@@ -18,14 +18,14 @@ const About = () => {
             <div className="about">
                 <Parallax pages={2.15}>
                     <ParallaxLayer
-                        factor={3.3}
+                        factor={3.6}
                         style={{
                             backgroundImage: `url(${Wallpaper2})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
                         className="tint"
-                        speed={1}
+                        speed={1.25}
                     >
                         <Snowfall snowflakeCount={100} />{' '}
                     </ParallaxLayer>
