@@ -13,11 +13,11 @@
     flex-direction: column;
     width: 400px;
     border-radius: 1em;
+    transition: transform 0.3s;
 }
 
 .project:hover {
     transform: scale(1.05);
-    transition: transform 0.3s;
 }
 
 .projects-list {
@@ -113,6 +113,7 @@
     border-radius: 0.75em;
     background-color: black;
     padding: 0.5em 1.5em;
+    transition: all 0.3s;
 }
 
 .project-desc {
@@ -121,13 +122,17 @@
 
 .projects-main-title {
     font-family: 'Cubano';
-    font-size: 2em;
+    font-size: 2.75em;
+    color: white;
+}
+.projects-main-info {
+    color: rgb(197, 195, 195);
+    text-align: center;
 }
 
 .project-button:hover {
     cursor: pointer;
     transform: scale(1.2);
-    transition: all 0.3s;
 }
 @media (max-width: 550px) {
     .project {
