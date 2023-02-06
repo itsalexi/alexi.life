@@ -47,7 +47,7 @@ const Projects = () => {
         },
         {
             name: 'Portfolio Website',
-            desc: 'My personal portfolio website. The one your sitting on right now!',
+            desc: "My personal portfolio website. The one you're sitting on right now!",
             tech: ['HTML', 'CSS', 'React', 'JavaScript'],
             image: PortfolioImg,
             live: 'https://alexi.life/',
