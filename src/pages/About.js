@@ -203,7 +203,7 @@ const About = () => {
                                             rel="noopener noreferrer"
                                         >
                                             Riot Games
-                                        </a>
+                                        </a>{' '}
                                         for reporting a low-impact security
                                         vulnerability.
                                     </li>
