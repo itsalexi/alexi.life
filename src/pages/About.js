@@ -193,6 +193,20 @@ const About = () => {
                                         </span>
                                         !
                                     </li>
+                                    <li className="card-hobby">
+                                        Received a{' '}
+                                        <span className="highlight">500$</span>{' '}
+                                        bounty from{' '}
+                                        <a
+                                            href="https://hackerone.com/riot"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Riot Games
+                                        </a>
+                                        for reporting a low-impact security
+                                        vulnerability.
+                                    </li>
                                 </ul>
                             </div>
                         </div>
