@@ -193,6 +193,7 @@ const About = () => {
                                         </span>
                                         !
                                     </li>
+                                    <br />
                                     <li className="card-hobby">
                                         Received a{' '}
                                         <span className="highlight">500$</span>{' '}
