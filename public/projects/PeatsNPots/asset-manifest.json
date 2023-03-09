@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/projects/PotsNPeats/static/css/main.8123d6be.css",
+    "main.js": "/projects/PotsNPeats/static/js/main.3c1cf1b7.js",
+    "static/media/background.jpg": "/projects/PotsNPeats/static/media/background.25908c7b2bfea2998487.jpg",
+    "static/media/CoconutTrees2.png": "/projects/PotsNPeats/static/media/CoconutTrees2.571f56bed152091db059.png",
+    "static/media/CoconutTrees1.png": "/projects/PotsNPeats/static/media/CoconutTrees1.a97f5b09b8e48566788c.png",
+    "static/media/CoconutCoirPotswLeaves.png": "/projects/PotsNPeats/static/media/CoconutCoirPotswLeaves.474d6113b7438662d80a.png",
+    "static/media/3DCocopeatBlocks.png": "/projects/PotsNPeats/static/media/3DCocopeatBlocks.a0d35dc637e75c6696e0.png",
+    "static/media/OpenCoconut1.png": "/projects/PotsNPeats/static/media/OpenCoconut1.366256bf6f5fcfd3c8ea.png",
+    "static/media/Coconut1.png": "/projects/PotsNPeats/static/media/Coconut1.dbc040002e62454a48a2.png",
+    "static/media/Coconut2.png": "/projects/PotsNPeats/static/media/Coconut2.ea8b2fbe30f67f5e9659.png",
+    "static/media/2DCocopeatBlocks2.png": "/projects/PotsNPeats/static/media/2DCocopeatBlocks2.a6d9cc6ee0c4bd378565.png",
+    "static/media/2DCocopeatBlocks1.png": "/projects/PotsNPeats/static/media/2DCocopeatBlocks1.bc7b5968e7d82dabaf16.png",
+    "index.html": "/projects/PotsNPeats/index.html",
+    "main.8123d6be.css.map": "/projects/PotsNPeats/static/css/main.8123d6be.css.map",
+    "main.3c1cf1b7.js.map": "/projects/PotsNPeats/static/js/main.3c1cf1b7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8123d6be.css",
+    "static/js/main.3c1cf1b7.js"
+  ]
+}
