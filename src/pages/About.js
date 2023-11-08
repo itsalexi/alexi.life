@@ -45,7 +45,7 @@ const About = () => {
                                         Philippines
                                     </span>
                                     . As of 2023, I'm now 16 years old! I'm
-                                    currently a Grade 11 STEM student, and plan
+                                    currently a Grade 12 STEM student, and plan
                                     to graduate with a degree in{' '}
                                     <span className="highlight">
                                         Computer Science

@@ -19,19 +19,27 @@ const openInNewTab = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
 };
 
+// TODO: Use a CMS to manage this
 const Projects = () => {
     const projects = [
         {
             name: 'Sharespace',
             desc: 'A social media blogging platform like Medium and Dev.to! You have the ability to like, share, comment on every post!',
-            tech: ['HTML', 'CSS', 'React', 'Firebase', 'NextJS'],
+            tech: [
+                'HTML',
+                'CSS',
+                'React',
+                'Firebase',
+                'NextJS',
+                'mobilefriendly',
+            ],
             image: SharespaceImg,
             live: 'https://sharespace.alexi.life',
             repo: 'https://github.com/itsalexi/Sharespace',
         },
         {
             name: 'Discord Clone',
-            desc: 'A discord clone with full authentication and realtime chat messaging powered by Firebase.',
+            desc: 'A discord clone with full authentication and realtime chat messaging powered by Firebase. Login/Register pages are mobile-friendly, but the main application is not. Still try it out!',
             tech: ['HTML', 'CSS', 'React', 'Firebase', 'JavaScript'],
             image: DiscordImg,
             live: 'https://alexi.life/projects/discord-clone/',
@@ -40,7 +48,7 @@ const Projects = () => {
         {
             name: 'Fake Shopping Website',
             desc: 'A fake shopping website populated with data from a Fake Store API to retrieve products from.',
-            tech: ['HTML', 'CSS', 'React', 'JavaScript'],
+            tech: ['HTML', 'CSS', 'React', 'JavaScript', 'mobilefriendly'],
             image: ShoppingImg,
             live: 'https://alexi.life/projects/Shopping-Website/',
             repo: 'https://github.com/itsalexi/Shopping-Website',
@@ -48,7 +56,7 @@ const Projects = () => {
         {
             name: 'Portfolio Website',
             desc: "My personal portfolio website. The one you're sitting on right now!",
-            tech: ['HTML', 'CSS', 'React', 'JavaScript'],
+            tech: ['HTML', 'CSS', 'React', 'JavaScript', 'mobilefriendly'],
             image: PortfolioImg,
             live: 'https://alexi.life/',
             repo: 'https://github.com/itsalexi/alexi.life/tree/source',
@@ -64,7 +72,7 @@ const Projects = () => {
         {
             name: 'Resume Builder',
             desc: 'A resume builder built with React! The document is very customizable, you can edit the information by simply pressing what you want to edit and changing it!',
-            tech: ['HTML', 'CSS', 'React', 'JavaScript'],
+            tech: ['HTML', 'CSS', 'React', 'JavaScript', 'mobilefriendly'],
             image: ResumeImg,
             live: 'https://alexi.life/projects/CV-Creator/',
             repo: 'https://github.com/itsalexi/CV-Creator',
@@ -72,7 +80,7 @@ const Projects = () => {
         {
             name: 'Weather App',
             desc: 'A weather app built with Vanilla JavaScript! It is powered by the OpenWeatherAPI, you are able to switch how the data is being displayed too!',
-            tech: ['HTML', 'CSS', 'JavaScript'],
+            tech: ['HTML', 'CSS', 'JavaScript', 'mobilefriendly'],
             image: WeatherImg,
             live: 'https://alexi.life/projects/Weather/',
             repo: 'https://github.com/itsalexi/Weather',

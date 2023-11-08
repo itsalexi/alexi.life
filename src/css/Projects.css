@@ -79,6 +79,10 @@
     background-color: rgb(52, 178, 52);
 }
 
+.project-tech.mobilefriendly {
+    background-color: rgb(85, 252, 85);
+}
+
 .project-tech.css {
     background-color: rgb(79, 79, 251);
     color: white;
