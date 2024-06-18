@@ -44,13 +44,14 @@ const About = () => {
                                     <span className="highlight">
                                         Philippines
                                     </span>
-                                    . As of 2023, I'm now 16 years old! I'm
-                                    currently a Grade 12 STEM student, and plan
-                                    to graduate with a degree in{' '}
+                                    . As of 2024, I'm now 17 years old! I'm
+                                    currently a first year college student
+                                    taking
                                     <span className="highlight">
                                         Computer Science
                                     </span>{' '}
-                                    when I graduate senior high school.
+                                    in Ateneo De Manila University. I'm also a
+                                    recipient for the DOST Merit Scholarship!
                                 </p>
                                 <p className="card-desc">
                                     {' '}
@@ -131,27 +132,25 @@ const About = () => {
                                 </p>
                                 <ul className="card-desc">
                                     <li className="card-hobby">
-                                        Consistent{' '}
+                                        Graduated{' '}
                                         <span className="highlight">
-                                            Honor Student
+                                            Senior High School
                                         </span>{' '}
-                                        throughout High School.
+                                        with Honors!
                                     </li>
                                     <br />
                                     <li className="card-hobby">
-                                        Completed{' '}
-                                        <span className="highlight">
-                                            Junior HS
-                                        </span>{' '}
-                                        and moved up to{' '}
-                                        <span className="highlight">
-                                            Senior HS
-                                        </span>
-                                        .
+                                        Passed all{' '}
+                                        <span className="highlight">Big 4</span>{' '}
+                                        entrance exams (UP, ADMU, UST, DLSU)!
+                                    </li>
+                                    <li className="card-hobby">
+                                        Recipient for the DOST Merit
+                                        Scholarship!
                                     </li>
                                     <br />
                                     <li className="card-hobby">
-                                        Completed 80% of the{' '}
+                                        Completed most of the{' '}
                                         <span className="highlight">
                                             JavaScript
                                         </span>{' '}
