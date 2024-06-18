@@ -144,6 +144,7 @@ const About = () => {
                                         <span className="highlight">Big 4</span>{' '}
                                         entrance exams (UP, ADMU, UST, DLSU)!
                                     </li>
+                                    <br />
                                     <li className="card-hobby">
                                         Recipient for the DOST Merit
                                         Scholarship!
