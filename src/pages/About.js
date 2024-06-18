@@ -46,7 +46,7 @@ const About = () => {
                                     </span>
                                     . As of 2024, I'm now 17 years old! I'm
                                     currently a first year college student
-                                    taking
+                                    taking{' '}
                                     <span className="highlight">
                                         Computer Science
                                     </span>{' '}
