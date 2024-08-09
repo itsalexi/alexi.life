@@ -14,6 +14,7 @@ import PortfolioImg from '../assets/portfolio.png';
 import ResumeImg from '../assets/resume.png';
 import ShoppingImg from '../assets/shopping.png';
 import WeatherImg from '../assets/weather.png';
+import TuitionImg from '../assets/tuition.png';
 
 const openInNewTab = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -22,6 +23,14 @@ const openInNewTab = (url) => {
 // TODO: Use a CMS to manage this
 const Projects = () => {
     const projects = [
+        {
+            name: 'Ateneo Tuition Fee Viewer',
+            desc: 'A tuition fee viewer and calculator for ADMU students! Easily estimate and see how much your tuition will cost at Ateneo ',
+            tech: ['HTML', 'CSS', 'React', 'NextJS', 'mobilefriendly'],
+            image: TuitionImg,
+            live: 'https://tuition.alexi.life/',
+            repo: 'https://github.com/itsalexi/Ateneo-Tuition',
+        },
         {
             name: 'Sharespace',
             desc: 'A social media blogging platform like Medium and Dev.to! You have the ability to like, share, comment on every post!',
