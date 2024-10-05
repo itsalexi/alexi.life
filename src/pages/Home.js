@@ -32,7 +32,7 @@ const Home = () => {
                                 words={[
                                     'Welcome to my portfolio!',
                                     'Explore the site to learn more about me!',
-                                    "I'm 16 years old!",
+                                    "I'm 17 years old!",
                                     "I'm a web developer!",
                                     "I'm from the Philippines!",
                                     'I love to code!',

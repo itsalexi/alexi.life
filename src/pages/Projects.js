@@ -15,6 +15,7 @@ import ResumeImg from '../assets/resume.png';
 import ShoppingImg from '../assets/shopping.png';
 import WeatherImg from '../assets/weather.png';
 import TuitionImg from '../assets/tuition.png';
+import QPIImg from '../assets/qpi.png';
 
 const openInNewTab = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -23,6 +24,14 @@ const openInNewTab = (url) => {
 // TODO: Use a CMS to manage this
 const Projects = () => {
     const projects = [
+        {
+            name: 'Ateneo QPI Calculator',
+            desc: 'A simple easy to use QPI calculator, import your grades, or select your course to be able to calculate your grades fast!',
+            tech: ['HTML', 'CSS', 'React', 'NextJS', 'mobilefriendly'],
+            image: QPIImg,
+            live: 'https://qpi.alexi.life/',
+            repo: 'https://github.com/itsalexi/ADMU-QPI',
+        },
         {
             name: 'Ateneo Tuition Fee Viewer',
             desc: 'A tuition fee viewer and calculator for ADMU students! Easily estimate and see how much your tuition will cost at Ateneo ',
