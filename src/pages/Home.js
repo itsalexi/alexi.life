@@ -49,6 +49,20 @@ const Home = () => {
                     <div className="home-social-links">
                         <div className="social-media-link">
                             <a
+                                href="https://instagram.com/alexi_canamo"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <img
+                                    src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg"
+                                    alt="alexi_canamo"
+                                    height="50"
+                                    width="60"
+                                />
+                            </a>
+                        </div>
+                        <div className="social-media-link">
+                            <a
                                 href="https://twitter.com/itsalexitw"
                                 target="_blank"
                                 rel="noopener noreferrer"
