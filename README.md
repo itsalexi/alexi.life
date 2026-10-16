@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
 
-## Getting Started
+<br>
 
-First, run the development server:
+# alexi.life
+
+**My corner of the internet.**
+
+Projects, writing, talks, and hackathons, under a moonlit sky.
+
+<a href="https://alexi.life">alexi.life</a> ·
+<a href="#whats-inside">What's inside</a> ·
+<a href="#run-it-locally">Run it locally</a>
+
+<br>
+
+![live](https://img.shields.io/badge/live-alexi.life-1b1c1e?style=flat-square&labelColor=0d0f12)
+![next.js](https://img.shields.io/badge/next.js-16-1b1c1e?style=flat-square&labelColor=0d0f12)
+![tailwind](https://img.shields.io/badge/tailwind-4-1b1c1e?style=flat-square&labelColor=0d0f12)
+
+<br>
+
+<img src=".github/preview.webp" alt="The alexi.life home page" width="900">
+
+</div>
+
+<br>
+
+<table>
+<tr>
+<td width="33%"><img src=".github/projects.webp" alt="Projects page"></td>
+<td width="33%"><img src=".github/blog.webp" alt="A blog post"></td>
+<td width="33%"><img src=".github/hack.webp" alt="Hackathons page"></td>
+</tr>
+<tr>
+<td align="center"><sub>projects</sub></td>
+<td align="center"><sub>writing</sub></td>
+<td align="center"><sub>hackathons</sub></td>
+</tr>
+</table>
+
+<br>
+
+## What's inside
+
+- **A night sky.** The hero is a moonlit scene with clouds and a passing plane, drawn in Three.js.
+- **Content as files.** Projects, posts, talks and hackathons are markdown in `src/content`. Drafts stay hidden with `draft: true`.
+- **A timeline.** The longer trail on the home page is built from `src/data/experience.json`.
+- **Share cards.** Every page gets its own Open Graph image, plus a generated sitemap.
+
+<br>
+
+## Run it locally
+
+Next.js 16 · React 19 · Tailwind CSS 4 · Motion · Three.js · Biome
+
+<details>
+<summary><b>Setup</b></summary>
+<br>
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Adding a project, post or hackathon is a new markdown file in `src/content/`.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+</details>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<br>
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<div align="center">
+<sub>made in manila</sub>
+</div>
