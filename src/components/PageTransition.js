@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { usePreloaderReady } from "../hooks/usePreloaderReady";
+import { isCanvasPage } from "../lib/canvas-pages";
 import MoonlitSky from "./MoonlitSky";
 import skyStyles from "./MoonlitSky.module.css";
 
@@ -10,7 +11,7 @@ export default function PageTransition({ children }) {
   const pathname = usePathname();
   const isReady = usePreloaderReady();
   const hasAtmosphere = !pathname?.startsWith("/admin");
-  const hasMoonlitSky = hasAtmosphere && pathname !== "/";
+  const hasMoonlitSky = hasAtmosphere && !isCanvasPage(pathname);
 
   return (
     <motion.div

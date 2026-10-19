@@ -325,45 +325,129 @@ export function mountHome(root, { folders, email, navigate }) {
     sc: null,
   }));
 
+  // every order of 0..n-1 that's at most two swaps from the original (files mostly keep their place)
+  const orders = (n) => {
+    const out = [];
+    const walk = (left, acc) => {
+      if (!left.length) return out.push(acc);
+      for (const k of left) walk(left.filter((j) => j !== k), [...acc, k]);
+    };
+    walk([...Array(n).keys()], []);
+    return out
+      .map((o) => ({
+        o,
+        swaps: o.reduce(
+          (t, a, i) => t + o.slice(i + 1).filter((b) => b < a).length,
+          0,
+        ),
+      }))
+      .filter((x) => x.swaps <= 2);
+  };
+
+  // Frames keep their pictures' own shapes and sit in justified rows: every row spans the
+  // same width, so there are no orphans floating in the middle and no wide promo cut in half.
+  // Tries every way to break the files into rows (nudging the order a little if that evens
+  // them out). If everything fits at a comfortable size it all sits on screen; if not (short
+  // laptop screens) frames keep that size and the canvas scrolls, like a Figma page that runs
+  // past the window.
   function layoutCanvas(i) {
     const c = cv[i];
     const W = c.el.clientWidth;
     const H = c.el.clientHeight;
     const n = c.frames.length;
     if (!W || !H || !n) return;
-    const P = Math.max(28, W * 0.045);
-    const PV = 30;
-    const G = Math.max(24, W * 0.035);
-    const GV = 54;
-    const L = 28;
+    const P = Math.max(28, W * 0.05);
+    const PV = Math.max(24, H * 0.045);
+    const G = Math.max(22, W * 0.028);
+    const GV = 40;
+    const L = 30;
+    const ratio = c.frames.map((fr) => +fr.dataset.r || 1.6);
+    const availW = W - 2 * P;
+    const availH = H - 2 * PV;
+    const T = Math.max(160, Math.min(210, availH * 0.36)); // comfortable row height
     let best = null;
-    for (let cols = 1; cols <= n; cols++) {
-      const rows = Math.ceil(n / cols);
-      const w = Math.min(
-        (W - 2 * P - (cols - 1) * G) / cols,
-        ((H - 2 * PV - (rows - 1) * GV) / rows - L) * 1.6,
-      );
-      if (!best || w > best.w) best = { cols, rows, w };
+    for (const { o, swaps } of orders(n)) {
+      const ar = o.map((k) => ratio[k]);
+      for (let mask = 0; mask < 1 << (n - 1); mask++) {
+        const rows = [[0]];
+        for (let k = 1; k < n; k++) {
+          if (mask & (1 << (k - 1))) rows.push([k]);
+          else rows[rows.length - 1].push(k);
+        }
+        const sums = rows.map((r) => r.reduce((t, k) => t + ar[k], 0));
+        // the row width that fills the height exactly (heights are linear in it)
+        const fixed = rows.length * L + (rows.length - 1) * GV;
+        const inv = sums.reduce((t, S) => t + 1 / S, 0);
+        const gapH = rows.reduce(
+          (t, r, j) => t + ((r.length - 1) * G) / sums[j],
+          0,
+        );
+        const fitW = (availH - fixed + gapH) / inv;
+        // the row width that keeps the shortest row at a comfortable height
+        const wantW = Math.min(
+          availW,
+          Math.max(...rows.map((r, j) => T * sums[j] + (r.length - 1) * G)),
+        );
+        // nearly fits: shrink a touch and keep it all on screen; otherwise scroll
+        const rw = fitW >= wantW * 0.9 ? Math.min(fitW, availW) : wantW;
+        const hs = rows.map((r, j) => (rw - (r.length - 1) * G) / sums[j]);
+        const total =
+          hs.reduce((t, h) => t + h + L, 0) + (rows.length - 1) * GV;
+        let score = 0.96 ** swaps;
+        // even rows read calmer than a big row over a strip of small ones
+        if (Math.max(...hs) / Math.min(...hs) > 1.3) score *= 0.6;
+        if (n > 2 && rows.some((r) => r.length === 1)) score *= 0.85;
+        // a frame too narrow for its own name reads as a mistake
+        if (rows.some((r, j) => r.some((k) => hs[j] * ar[k] < 150)))
+          score *= 0.5;
+        score *=
+          Math.sqrt(rw / availW) * // spanning the canvas beats a block floating in the middle
+          Math.min(1, Math.min(...hs) / T) ** 2 * // small frames are the worst outcome
+          Math.min(1, availH / total) ** 0.7 * // scrolling is fine, but less is better
+          Math.sqrt(Math.min(1, total / availH)); // and a thin strip in a tall canvas looks lost
+        if (!best || score > best.score)
+          best = { rows: rows.map((r) => r.map((k) => o[k])), hs, rw, score };
+      }
     }
-    const { cols, rows, w } = best;
-    const h = w / 1.6;
-    const top0 = (H - (rows * (h + L) + (rows - 1) * GV)) / 2 + L;
-    c.frames.forEach((fr, k) => {
-      const r = Math.floor(k / cols);
-      const inRow = r === rows - 1 ? n - r * cols : cols;
-      const left0 = (W - (inRow * w + (inRow - 1) * G)) / 2;
-      const x = left0 + (k % cols) * (w + G);
-      const y = top0 + r * (h + L + GV);
-      Object.assign(fr.style, {
-        left: `${x}px`,
-        top: `${y}px`,
-        width: `${w}px`,
-      });
-      fr.querySelector(".dim").textContent =
-        `${Math.round(w)} × ${Math.round(h)}`;
-      c.rects[k] = { x, y, w, h };
+    const { rows, hs, rw } = best;
+    const total = hs.reduce((t, h) => t + h + L, 0) + (rows.length - 1) * GV;
+    let y = Math.max(PV, (H - total) / 2) + L;
+    c.maxPan = Math.max(0, total + 2 * PV - H);
+    c.pan = Math.min(0, Math.max(-c.maxPan, c.pan || 0));
+    const left = (W - rw) / 2;
+    rows.forEach((row, j) => {
+      const h = hs[j];
+      let x = left;
+      for (const k of row) {
+        const w = h * ratio[k];
+        const fr = c.frames[k];
+        Object.assign(fr.style, {
+          left: `${x}px`,
+          top: `${y}px`,
+          width: `${w}px`,
+        });
+        fr.querySelector(".dim").textContent =
+          `${Math.round(w)} × ${Math.round(h)}`;
+        c.rects[k] = { x, y, w, h };
+        x += w + G;
+      }
+      y += h + L + GV;
     });
     if (c.at >= 0) camTo(i, c.at, true);
+    else panTo(i, c.pan, true);
+  }
+
+  // scrolling a canvas that runs past the window: the wheel (or a trackpad) moves the page of
+  // frames; soft fades at the edges say there's more that way
+  function panTo(i, y, instant) {
+    const c = cv[i];
+    c.pan = Math.min(0, Math.max(-(c.maxPan || 0), y));
+    c.el.classList.toggle("more-below", c.pan > -(c.maxPan || 0) + 2);
+    c.el.classList.toggle("more-above", c.pan < -2);
+    c.cam?.stop();
+    if (instant) set(c.world, { y: c.pan });
+    else
+      c.cam = animate(c.world, { y: c.pan }, { duration: 0.22, ease: "easeOut" });
   }
 
   const setZ = (c, z) => {
@@ -377,7 +461,7 @@ export function mountHome(root, { folders, email, navigate }) {
     const W = c.el.clientWidth;
     const H = c.el.clientHeight;
     let x = 0;
-    let y = 0;
+    let y = c.pan || 0;
     let z = 1;
     if (k >= 0 && c.rects[k]) {
       const r = c.rects[k];
@@ -450,14 +534,27 @@ export function mountHome(root, { folders, email, navigate }) {
   function resetCanvas(i) {
     const c = cv[i];
     c.at = -1;
+    c.pan = 0;
     c.el.classList.remove("zoomed");
     for (const fr of c.frames) fr.classList.remove("on");
     c.cap.classList.remove("on");
     c.cap.style.opacity = 0;
     camTo(i, -1, true);
+    panTo(i, 0, true);
   }
 
   cv.forEach((c, i) => {
+    on(
+      c.el,
+      "wheel",
+      (e) => {
+        if (c.at >= 0 || !c.maxPan) return;
+        e.preventDefault();
+        const dy = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY;
+        panTo(i, c.pan - dy, Math.abs(dy) < 40);
+      },
+      { passive: false },
+    );
     on(c.el, "click", (e) => {
       const view = e.target.closest(".view");
       if (view) {
@@ -1113,10 +1210,11 @@ export function mountHome(root, { folders, email, navigate }) {
     };
     // the first-visit tour, once the page has settled
     const tour = () => {
-      hint("tabs", () => tabs[1], "open a folder");
+      // a folder may already be open (deep link): then these point at things that aren't there
+      hint("tabs", () => (open < 0 ? tabs[1] : null), "open a folder");
       hint(
         "casper",
-        () => root.querySelector(".hero .pill"),
+        () => (open < 0 ? root.querySelector(".hero .pill") : null),
         "where I’m building now",
       );
       if (finePointer)
@@ -1160,6 +1258,25 @@ export function mountHome(root, { folders, email, navigate }) {
       pin.remove();
     }, 1700);
   });
+
+  // deep links from other pages: /?folder=built opens that folder, /?hi=1 opens Say hi
+  const params = new URLSearchParams(window.location.search);
+  const wantFolder = folders.findIndex(
+    (f) => f.name.toLowerCase() === params.get("folder"),
+  );
+  // tidy the URL once this mount is really live (a dev-mode remount would otherwise
+  // lose the request before the real mount sees it)
+  if (params.has("folder") || params.has("hi"))
+    later(
+      () => window.history.replaceState(null, "", window.location.pathname),
+      0,
+    );
+  if (wantFolder >= 0) {
+    if (intro)
+      queued = wantFolder; // opens as soon as the entrance finishes
+    else later(() => onTab(wantFolder), 120);
+  }
+  if (params.get("hi")) later(openHello, intro ? 2600 : 250);
 
   // decode folder images while idle so the first open never stutters
   const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));

@@ -16,70 +16,92 @@ const MONTHS = [
   "Dec",
 ];
 
-function shortDate(value) {
+export function shortDate(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return String(value || "");
   return `${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-// Work isn't backed by detail pages, so it's curated here.
-const WORK = [
+// Work is curated here (each role gets a page at /work/<slug>); `bg` and `ink` color its cover.
+export const WORK = [
   {
     title: "Casper Studios",
-    meta: "AI Engineering Intern",
+    href: "/work/casper-studios",
+    slug: "casper-studios",
+    meta: "AI Engineering",
     when: "Now",
     logo: "/images/home/casper.jpg",
     bg: "linear-gradient(120deg,#6d2cf5,#d63af0)",
+    ink: "#ffffff",
     line: "Building AI products, right now.",
-    href: "/about",
   },
   {
     title: "NextPay",
+    href: "/work/nextpay",
+    slug: "nextpay",
+    experience: "NextPay (YC W21)",
+    related: { label: "Read the story", href: "/blog/nextpay-internship" },
     meta: "YC W21 · SWE Intern",
     when: "2025 – 2026",
     logo: "/images/logos/nextpay.webp",
     bg: "#5470ff",
+    ink: "#ffffff",
     line: "A class paper, a cold message, and one risky question turned into my first startup internship.",
-    href: "/blog/nextpay-internship",
   },
   {
     title: "Swarm",
+    href: "/work/swarm",
+    slug: "swarm",
+    experience: "Swarm",
     meta: "SWE Intern",
     when: "2026",
     logo: "/images/logos/swarm.webp",
     bg: "#0b0b18",
+    ink: "#ffffff",
     line: "Compliance tooling that maps overlapping privacy and security frameworks into one graph.",
-    href: "/about",
   },
   {
     title: "Bytespace",
+    href: "/work/bytespace",
+    slug: "bytespace",
+    experience: "Bytespace",
     meta: "Product Engineer",
     when: "2026",
     logo: "/images/logos/bytespace.webp",
     bg: "#f1ead9",
+    ink: "#1d1d1f",
     line: "Core Bot0 platform work: product improvements and reliability upgrades.",
     note: "8 product improvements in under a month",
-    href: "/about",
   },
   {
     title: "Sip & Scale",
+    href: "/work/sip-and-scale",
+    slug: "sip-and-scale",
+    experience: "Sip & Scale",
     meta: "Head of Product & Engineering",
     when: "2026",
     logo: "/images/logos/sip-scale-wordmark.webp",
     wide: true,
     bg: "#f7f3ea",
+    ink: "#1d1d1f",
     line: "Product systems for a community of builders across events and cities.",
     note: "1,000+ builders, 50+ events, 20+ cities",
-    href: "/about",
   },
   {
     title: "Ateneo MISA",
+    href: "/work/ateneo-misa",
+    slug: "ateneo-misa",
+    experience: "Ateneo MISA",
+    related: {
+      label: "See the registration system",
+      href: "/projects/misa-registration-system",
+    },
     meta: "AVP for IT Skills & Development",
     when: "2025 – 2026",
     logo: "/images/logos/misa.webp",
     bg: "#1ea5ad",
+    ink: "#ffffff",
     line: "Taught student developers and built the org’s registration system.",
-    href: "/projects/misa-registration-system",
   },
 ];
 
@@ -163,7 +185,7 @@ const WRITING_TALKS = {
   },
 };
 
-const firstSentence = (text) =>
+export const firstSentence = (text) =>
   String(text || "")
     .replace(/\s+/g, " ")
     .trim()

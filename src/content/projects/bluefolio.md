@@ -17,6 +17,8 @@ githubUrl: null
 image: /images/projects/bluefolio-featured.webp?v=20261003c
 featured: true
 order: 1
+# the detail page's hero (the home thumbnail keeps `image`)
+heroImage: /images/projects/bluefolio-landing.webp
 ---
 
 ## The gist

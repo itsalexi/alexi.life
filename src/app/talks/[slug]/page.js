@@ -1,9 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { use } from "react";
+import { notFound } from "next/navigation";
+import FolderPage from "@/components/frame/FolderPage";
+import FrameMarkdown from "@/components/frame/FrameMarkdown";
+import { findInFolders, loadHomeFolders } from "@/lib/content";
+import { firstSentence, shortDate } from "@/lib/home-folders";
+import { imageSize } from "@/lib/image-size";
+import { calculateReadingTime } from "@/lib/reading-time";
 import { createMetadata, dateToIso } from "@/lib/seo";
-import TalkContent from "./TalkContent";
+import { extractMarkdownHeadings } from "@/lib/table-of-contents.mjs";
 
 // Generate metadata for each talk
 export async function generateMetadata({ params }) {
@@ -53,27 +59,50 @@ export async function generateStaticParams() {
 }
 
 // Server component - reads file at build time
-export default function TalkDetailPage({ params }) {
-  const { slug } = use(params);
+// The talk, opened from the Writing folder on home.
+export default async function TalkDetailPage({ params }) {
+  const { slug } = await params;
+  const filePath = path.join(process.cwd(), "src/content/talks", `${slug}.md`);
+  if (!fs.existsSync(filePath)) notFound();
 
-  const talksDirectory = path.join(process.cwd(), "src/content/talks");
-  const filePath = path.join(talksDirectory, `${slug}.md`);
-
-  if (!fs.existsSync(filePath)) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <p className="text-white">Talk not found</p>
-      </div>
-    );
-  }
-
-  const fileContents = fs.readFileSync(filePath, "utf8");
-  const { data: frontmatter, content } = matter(fileContents);
-
-  const talk = {
-    ...frontmatter,
-    fullDescription: content,
+  const { data: talk, content } = matter(fs.readFileSync(filePath, "utf8"));
+  const folders = await loadHomeFolders();
+  const found = findInFolders(folders, `/talks/${slug}`);
+  const folder = found?.folder ?? folders.find((f) => f.name === "Writing");
+  const item = {
+    title: talk.title,
+    meta: `Talk · ${talk.event}`,
+    when: shortDate(talk.date),
+    line: found?.item.line ?? firstSentence(talk.shortDescription),
   };
+  const headings = extractMarkdownHeadings(content);
+  const images = talk.images || [];
 
-  return <TalkContent talk={talk} />;
+  const heroSrc = talk.heroImage || images[0];
+  const heroSize = await imageSize(heroSrc);
+  const gallery = await Promise.all(
+    images
+      .filter((src) => src !== heroSrc)
+      .map(async (src) => ({ src, ...(await imageSize(src)) })),
+  );
+  return (
+    <FolderPage
+      folder={folder}
+      index={found?.index ?? -1}
+      item={item}
+      next={found?.next ?? (found ? null : folder.items[0])}
+      hero={heroSrc}
+      heroSize={heroSize}
+      heroKind="photo"
+      links={talk.link ? [{ label: "Watch", href: talk.link }] : []}
+      chips={(talk.topics || []).slice(0, 4)}
+      chipsLabel="Topics"
+      headings={headings}
+      docLabel="Talk notes"
+      readTime={calculateReadingTime(content)}
+      gallery={gallery}
+    >
+      <FrameMarkdown content={content} headings={headings} skip={heroSrc} />
+    </FolderPage>
+  );
 }

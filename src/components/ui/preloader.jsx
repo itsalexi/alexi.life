@@ -6,6 +6,7 @@ import {
   markPreloaderReady,
   PRELOADER_SEEN_KEY,
 } from "../../hooks/usePreloaderReady";
+import { isCanvasPage } from "../../lib/canvas-pages";
 import { waitForSceneReady } from "../../lib/sceneReadiness";
 import styles from "./preloader.module.css";
 import { selectSignature, zoomSelectionToFit } from "./preloaderHome";
@@ -76,7 +77,10 @@ export function Preloader() {
   const selectRef = useRef(null);
   const barRef = useRef(null);
   // Home is a light Figma-style canvas; it gets its own light preloader so the reveal is seamless.
-  const home = usePathname() === "/";
+  const pathname = usePathname();
+  const home = pathname === "/";
+  // other canvas pages share the light look, without the signature choreography
+  const light = isCanvasPage(pathname);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -196,9 +200,9 @@ export function Preloader() {
     <div
       className={styles.overlay}
       data-phase={phase}
-      data-variant={home ? "home" : undefined}
+      data-variant={light ? "home" : undefined}
     >
-      <div className={styles.veil} aria-hidden="true" />
+      <div className={styles.veil} data-part="veil" aria-hidden="true" />
       <div
         className={styles.ambient}
         data-ambient-entrance="true"
@@ -224,7 +228,12 @@ export function Preloader() {
           />
         ))}
       </div>
-      <div ref={signatureRef} className={styles.signature} aria-hidden="true">
+      <div
+        ref={signatureRef}
+        className={styles.signature}
+        data-part="signature"
+        aria-hidden="true"
+      >
         <SvgLoader size={80} />
         {home && (
           <span ref={penRef} className={styles.pen}>
@@ -242,7 +251,7 @@ export function Preloader() {
           </span>
         )}
         {home && (
-          <span ref={selectRef} className={styles.select}>
+          <span ref={selectRef} className={styles.select} data-part="select">
             <i />
             <i />
             <i />

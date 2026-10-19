@@ -13,6 +13,8 @@ githubUrl: null
 image: /images/projects/one-big-match-featured.webp?v=20260624
 featured: true
 order: 4
+# the detail page's hero (the home thumbnail keeps `image`)
+heroImage: /images/projects/one-big-match-1762328352877.webp
 ---
 #### **The Gist**
 

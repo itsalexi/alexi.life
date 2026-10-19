@@ -19,6 +19,8 @@ highlights:
   - Top 5 finalist among 200+ teams at the first Naga Mayoral Hackathon.
   - Built SALBAR—an offline-first emergency health protocol for when the internet, power, and “smart city” systems fail.
   - Team qtr.zip with Edward, Eduardo, and Abby; thanks to Naga City Government, Mayor Leni Robredo, mentors, and speakers.
+# the detail page's hero (the home thumbnail keeps `image`)
+heroImage: /images/hackathons/salbar-2.jpeg
 ---
 
 ## What happened

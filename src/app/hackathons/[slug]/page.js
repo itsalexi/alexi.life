@@ -1,8 +1,14 @@
 import fs from "node:fs";
-import { use } from "react";
+import { notFound } from "next/navigation";
+import FolderPage from "@/components/frame/FolderPage";
+import FrameMarkdown from "@/components/frame/FrameMarkdown";
+import { findInFolders, loadHomeFolders } from "@/lib/content";
 import { getHackathonBySlug, getHackathonsDirectory } from "@/lib/hackathons";
+import { firstSentence, shortDate } from "@/lib/home-folders";
+import { imageSize } from "@/lib/image-size";
+import { calculateReadingTime } from "@/lib/reading-time";
 import { createMetadata, dateToIso } from "@/lib/seo";
-import HackathonContent from "./HackathonContent";
+import { extractMarkdownHeadings } from "@/lib/table-of-contents.mjs";
 
 export async function generateStaticParams() {
   const dir = getHackathonsDirectory();
@@ -38,17 +44,60 @@ export async function generateMetadata({ params }) {
   });
 }
 
-export default function HackathonDetailPage({ params }) {
-  const { slug } = use(params);
+// The hackathon, opened from the Weekends folder on home.
+export default async function HackathonDetailPage({ params }) {
+  const { slug } = await params;
   const hackathon = getHackathonBySlug(slug);
+  if (!hackathon) notFound();
 
-  if (!hackathon) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <p className="text-white">Hackathon not found</p>
-      </div>
-    );
-  }
+  const folders = await loadHomeFolders();
+  const found = findInFolders(folders, `/hackathons/${slug}`);
+  const folder = found?.folder ?? folders.find((f) => f.name === "Weekends");
+  const item = {
+    title: hackathon.title,
+    res: hackathon.result,
+    meta: found?.item.meta ?? hackathon.event,
+    when: found?.item.when ?? shortDate(hackathon.date),
+    line: found?.item.line ?? firstSentence(hackathon.highlights?.[0]),
+    note: found?.item.note,
+  };
+  const link = hackathon.link;
+  const linkLabel = link?.includes("github.com")
+    ? "Code"
+    : link?.includes("linkedin.com")
+      ? "LinkedIn post"
+      : "Post";
+  const headings = extractMarkdownHeadings(hackathon.content);
+  const hero = hackathon.heroImage || hackathon.image || hackathon.images?.[0];
 
-  return <HackathonContent hackathon={hackathon} />;
+  const heroSrc = hero;
+  const heroSize = await imageSize(heroSrc);
+  const gallery = await Promise.all(
+    (hackathon.images || [])
+      .filter((src) => src !== hero)
+      .map(async (src) => ({ src, ...(await imageSize(src)) })),
+  );
+  return (
+    <FolderPage
+      folder={folder}
+      index={found?.index ?? -1}
+      item={item}
+      next={found?.next ?? (found ? null : folder.items[0])}
+      hero={heroSrc}
+      heroSize={heroSize}
+      heroKind="photo"
+      links={link ? [{ label: linkLabel, href: link }] : []}
+      headings={headings}
+      docLabel="Weekend build"
+      readTime={calculateReadingTime(hackathon.content)}
+      glance={hackathon.highlights || []}
+      gallery={gallery}
+    >
+      <FrameMarkdown
+        content={hackathon.content}
+        headings={headings}
+        skip={heroSrc}
+      />
+    </FolderPage>
+  );
 }

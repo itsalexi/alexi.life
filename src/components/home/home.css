@@ -1,9 +1,56 @@
 /* alexi.life home: one screen, a hero and a drawer of four folders.
    Ported from the approved prototype; every selector is scoped under .alx. */
-.alx {
+/* theme tokens: day is the light canvas, night is Figma's dark canvas */
+.alx,
+.fp-zoom {
   --ink: #1d1d1f;
   --gray: #6e6e73;
   --gray2: #86868b;
+  --bg: #f5f5f3;
+  --dot: #e2e2de;
+  --sheet: #fdfdfb;
+  --canvas: #f6f6f3;
+  --canvas-dot: #e2e2dd;
+  --surface: #fff;
+  --paper: #fbfbf8;
+  --paper2: #f2f1ec;
+  --ph: #ececea;
+  --text: #3a3a3c;
+  --text2: #424245;
+  --title-gray: #9a9aa0;
+  --mute: #b5b5ba;
+  --line: rgba(0, 0, 0, 0.1);
+  --hover: rgba(0, 0, 0, 0.04);
+  --scrim: rgba(245, 245, 243, 0.94);
+  --btn: #1d1d1f;
+  --btn-ink: #fff;
+}
+html[data-theme="dark"] .alx,
+html[data-theme="dark"] .fp-zoom {
+  --ink: #f2f2ef;
+  --gray: #a1a1a6;
+  --gray2: #8e8e93;
+  --bg: #121213;
+  --dot: #262628;
+  --sheet: #1c1c1e;
+  --canvas: #19191b;
+  --canvas-dot: #2a2a2d;
+  --surface: #232326;
+  --paper: #2a2a2d;
+  --paper2: #232326;
+  --ph: #2a2a2d;
+  --text: #c7c7cc;
+  --text2: #b5b5ba;
+  --title-gray: #6e6e73;
+  --mute: #5c5c62;
+  --line: rgba(255, 255, 255, 0.12);
+  --hover: rgba(255, 255, 255, 0.06);
+  --scrim: rgba(18, 18, 19, 0.92);
+  --btn: #f2f2ef;
+  --btn-ink: #121213;
+  color-scheme: dark;
+}
+.alx {
   --fig: #0d99ff;
   --cur: #5470ff;
   --pill: cubic-bezier(0.34, 1.8, 0.64, 1);
@@ -13,8 +60,8 @@
   height: 100svh;
   overflow: hidden;
   color: var(--ink);
-  background-color: #f5f5f3;
-  background-image: radial-gradient(circle, #e2e2de 1px, transparent 1.3px);
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--dot) 1px, transparent 1.3px);
   background-size: 22px 22px;
   background-position: 11px 11px;
   font-family:
@@ -87,7 +134,7 @@
   border-radius: 50%;
   object-fit: cover;
   box-shadow:
-    0 0 0 2px #f5f5f3,
+    0 0 0 2px var(--bg),
     0 0 0 3.5px var(--cur);
   transition: transform 0.45s var(--lift);
 }
@@ -169,8 +216,8 @@
   height: 36px;
   padding: 0 17px;
   border-radius: 999px;
-  background: var(--ink);
-  color: #fff;
+  background: var(--btn);
+  color: var(--btn-ink);
   font-size: 14px;
   font-weight: 600;
   transition: transform 0.32s var(--pill);
@@ -178,7 +225,7 @@
 .alx .hr .hi:hover {
   transform: scale(1.06) rotate(-2deg);
 }
-@media (max-width: 380px) {
+@media (max-width: 430px) {
   .alx .status .loc {
     display: none;
   }
@@ -228,7 +275,7 @@
   background: url(/images/home/me-matcha.jpg) center 28% / cover;
   transform: rotate(-4deg);
   box-shadow:
-    0 0 0 0.05em #fff,
+    0 0 0 0.05em var(--surface),
     0 10px 28px -10px rgba(0, 0, 0, 0.4);
   transition: transform 0.5s var(--lift);
   cursor: zoom-in;
@@ -251,7 +298,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  background: #fff;
+  background: var(--surface);
   border: 2px solid var(--fig);
 }
 .alx .sel > b:nth-of-type(1) {
@@ -340,7 +387,7 @@
 }
 .alx .links a {
   text-decoration: none;
-  border-bottom: 1.5px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 1.5px solid var(--line);
 }
 .alx .links .mail {
   font:
@@ -397,6 +444,9 @@
   background: var(--c);
   color: var(--k);
   z-index: 2;
+  /* a skirt in the folder's own color: when the tab rises (hover, grab) it stays joined to the
+     folder instead of opening a sliver of canvas underneath */
+  box-shadow: 0 12px 0 var(--c);
 }
 .alx .tab small {
   font:
@@ -421,7 +471,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--hover);
   font-size: 14px;
   opacity: 0;
   pointer-events: none;
@@ -505,7 +555,7 @@
 .alx .sheet {
   position: relative;
   flex: 1;
-  background: #fdfdfb;
+  background: var(--sheet);
   border-radius: 14px;
   overflow: auto;
   overscroll-behavior: contain;
@@ -535,7 +585,7 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--ink);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  box-shadow: inset 0 0 0 1px var(--line);
   white-space: nowrap;
 }
 .alx .two {
@@ -543,7 +593,7 @@
   font-weight: 600;
   line-height: 1.35;
   letter-spacing: -0.02em;
-  color: #86868b;
+  color: var(--gray2);
   margin-top: 10px;
   text-wrap: pretty;
 }
@@ -584,18 +634,18 @@
   cursor: pointer;
 }
 .alx .row:hover {
-  background: rgba(0, 0, 0, 0.035);
+  background: var(--hover);
 }
 .alx .row:focus-visible {
   outline-color: var(--fig);
 }
 .alx .thumb {
   position: relative;
-  aspect-ratio: 16 / 10;
-  border: 3px solid #fff;
+  aspect-ratio: clamp(1.3, var(--r, 1.6), 1.95);
+  border: 3px solid var(--surface);
   border-radius: 7px;
   overflow: hidden;
-  background: #ececea;
+  background: var(--ph);
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.1),
     0 6px 12px -8px rgba(0, 0, 0, 0.45);
@@ -625,7 +675,7 @@
   font-weight: 600;
   line-height: 1.35;
   letter-spacing: -0.01em;
-  color: #86868b;
+  color: var(--gray2);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -657,7 +707,7 @@
 .alx .papers i {
   position: absolute;
   inset: 0;
-  background: #fbfbf8;
+  background: var(--paper);
   border-radius: 5px;
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.14),
@@ -667,7 +717,7 @@
   left: -8px;
   right: 14px;
   top: 3px;
-  background: #f2f1ec;
+  background: var(--paper2);
   transform: rotate(-0.8deg);
 }
 .alx .print {
@@ -676,9 +726,9 @@
   top: -78px;
   width: 150px;
   aspect-ratio: 16 / 10;
-  border: 5px solid #fff;
+  border: 5px solid var(--surface);
   border-radius: 8px;
-  background: #ececea;
+  background: var(--ph);
   overflow: hidden;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.22);
   z-index: -1;
@@ -766,9 +816,38 @@
   overflow: hidden;
   cursor: default;
   border-radius: inherit;
-  background-color: #f6f6f3;
-  background-image: radial-gradient(circle, #e2e2dd 1px, transparent 1.3px);
+  background-color: var(--canvas);
+  background-image: radial-gradient(
+    circle,
+    var(--canvas-dot) 1px,
+    transparent 1.3px
+  );
   background-size: 24px 24px;
+}
+/* soft edges on a canvas that scrolls: there's more up or down there */
+.alx .canvas::before,
+.alx .canvas::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 56px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.alx .canvas::before {
+  top: 0;
+  background: linear-gradient(var(--canvas), transparent);
+}
+.alx .canvas::after {
+  bottom: 0;
+  background: linear-gradient(transparent, var(--canvas));
+}
+.alx .canvas.more-above:not(.zoomed)::before,
+.alx .canvas.more-below:not(.zoomed)::after {
+  opacity: 1;
 }
 .alx .world {
   position: absolute;
@@ -780,6 +859,13 @@
 .alx .frame {
   position: absolute;
   cursor: zoom-in;
+  container-type: inline-size;
+}
+/* a narrow frame keeps just its name; the year or result is one click away */
+@container (max-width: 200px) {
+  .alx .frame .fn span:last-child {
+    display: none;
+  }
 }
 .alx .frame .fn {
   position: absolute;
@@ -810,8 +896,8 @@
 .alx .frame .fb {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
-  background: #fff;
+  aspect-ratio: var(--r, 1.6);
+  background: var(--surface);
   overflow: hidden;
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.08),
@@ -839,6 +925,33 @@
   border-radius: 0;
   object-fit: contain;
 }
+/* a role's cover: its mark a touch larger, sitting a little high, with the role set under it
+   like the title card of a deck. Sizes follow the frame (container units), so they zoom with it */
+.alx .frame .fb.cover {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 2cqi;
+}
+.alx .frame .fb.cover img {
+  width: 20cqi;
+  border-radius: 22%;
+  margin-bottom: 5cqi;
+  box-shadow: 0 2cqi 5cqi -2cqi rgba(0, 0, 0, 0.35);
+}
+.alx .frame .fb.cover.wide img {
+  width: 50cqi;
+  margin-bottom: 3cqi;
+  box-shadow: none;
+}
+.alx .frame .fb.cover .role {
+  font-size: 4.1cqi;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  opacity: 0.82;
+}
 .alx .frame .ol {
   position: absolute;
   inset: 0;
@@ -851,7 +964,7 @@
   position: absolute;
   width: calc(8px / var(--z));
   height: calc(8px / var(--z));
-  background: #fff;
+  background: var(--surface);
   border: calc(1.5px / var(--z)) solid var(--fig);
   opacity: 0;
   transition: opacity 0.12s;
@@ -936,7 +1049,7 @@
   height: 32px;
   padding: 3px;
   border-radius: 16px 16px 16px 3px;
-  background: #fff;
+  background: var(--surface);
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.12),
     0 6px 16px -6px rgba(0, 0, 0, 0.35);
@@ -988,7 +1101,7 @@
   opacity: 0;
   pointer-events: none;
   z-index: 2;
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 24px 26px 22px;
   box-shadow:
@@ -1013,7 +1126,7 @@
 .alx .cap .hint {
   margin-top: 20px;
   padding-top: 14px;
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  border-top: 1px solid var(--line);
   font:
     500 11.5px ui-monospace,
     "SF Mono",
@@ -1026,7 +1139,7 @@
   font: inherit;
   padding: 1px 5px;
   border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  box-shadow: inset 0 0 0 1px var(--line);
   margin: 0 2px;
 }
 .alx .zoom {
@@ -1038,7 +1151,7 @@
   display: flex;
   align-items: center;
   border-radius: 7px;
-  background: #fff;
+  background: var(--surface);
   font:
     500 11px ui-monospace,
     "SF Mono",
@@ -1150,8 +1263,8 @@
   font: inherit;
   padding: 1px 6px;
   border-radius: 5px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
-  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--line);
+  background: var(--surface);
   margin: 0 2px;
 }
 @media (hover: none) {
@@ -1648,7 +1761,7 @@ html[data-preloader-ready="false"] .alx .drawer {
   height: 34px;
   padding: 3px 12px 3px 3px;
   border-radius: 17px 17px 17px 3px;
-  background: #fff;
+  background: var(--surface);
   box-shadow:
     0 0 0 0.5px rgba(0, 0, 0, 0.12),
     0 8px 20px -8px rgba(0, 0, 0, 0.35);
@@ -2157,4 +2270,87 @@ html[data-preloader-ready="false"] .alx .drawer {
   .alx .hello-joined {
     display: none;
   }
+}
+
+/* a hovered folder lifts 14px; this invisible strip under the tab keeps the pointer "on" the
+   tab while it does, so hovering the seam doesn't bounce the folder up and down forever */
+.alx .tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 24px;
+}
+
+/* photos crop toward faces (upper third), not the dead center */
+.alx .frame .fb:not(.logo) img,
+.alx .row .thumb:not(.logo) img,
+.alx .print img {
+  object-position: 50% 30%;
+}
+
+/* ---------- day / night ---------- */
+.alx .theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--ink);
+  transition:
+    background 0.2s,
+    transform 0.4s var(--lift);
+}
+.alx .theme-toggle:hover {
+  background: var(--hover);
+  transform: rotate(-18deg);
+}
+html[data-theme="dark"] body:has(.alx) {
+  background: #121213;
+}
+/* the switch itself is drawn by the view transition; don't crossfade on top of it */
+/* biome-ignore lint/correctness/noUnknownTypeSelector: "root" is the view-transition name */
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+/* biome-ignore lint/correctness/noUnknownTypeSelector: "root" is the view-transition name */
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* the light preloader, at night (its parts are tagged with data-part) */
+html[data-theme="dark"] [data-variant="home"] [data-part="veil"] {
+  background-color: #121213;
+  background-image: radial-gradient(circle, #262628 1px, transparent 1.3px);
+}
+html[data-theme="dark"] [data-variant="home"] [data-part="signature"],
+html[data-theme="dark"] [data-variant="home"] [data-part="signature"] svg {
+  color: #f2f2ef;
+}
+html[data-theme="dark"] [data-variant="home"] [data-part="select"] i {
+  background: #121213;
+}
+
+/* night: dark brand pills (Swarm) get a faint edge so they don't sink into the canvas */
+html[data-theme="dark"] .alx .pill {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+/* narrow phones: no room for the toggle beside your status; phones follow the system theme */
+@media (max-width: 430px) {
+  .alx .theme-toggle {
+    display: none;
+  }
+}
+
+/* wordmark logos (Sip & Scale) keep their proportions in every logo slot, never cropped square */
+.alx .logo.wide img {
+  width: 62%;
+  height: auto;
+  aspect-ratio: auto;
+  border-radius: 0;
+  object-fit: contain;
 }

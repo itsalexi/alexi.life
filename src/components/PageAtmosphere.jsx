@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { isCanvasPage } from "../lib/canvas-pages";
 import styles from "./PageAtmosphere.module.css";
 
 // Integer hashing produces identical positions during SSR and hydration.
@@ -104,7 +105,7 @@ function AtmosphereBand({ index, total }) {
 export default function PageAtmosphere() {
   const pathname = usePathname();
   const home = pathname === "/";
-  const enabled = !pathname?.startsWith("/admin") && !home;
+  const enabled = !pathname?.startsWith("/admin") && !isCanvasPage(pathname);
   const hostRef = useRef(null);
   const [bands, setBands] = useState(3);
   useEffect(() => {

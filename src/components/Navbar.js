@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { socials } from "../config/socials";
+import { isCanvasPage } from "../lib/canvas-pages";
 import {
   MobileNav,
   MobileNavHeader,
@@ -114,8 +115,8 @@ export default function PortfolioNavbar() {
   const navPillClass =
     "tap-scale relative flex h-9 items-center px-3 text-sm text-[var(--portfolio-ink-muted)] transition-[color,scale] duration-150 ease-out hover:text-[var(--portfolio-ink)]";
 
-  // Home is one screen with its own header.
-  if (pathname === "/") return null;
+  // Canvas pages (home, rebuilt detail pages) bring their own header.
+  if (isCanvasPage(pathname)) return null;
 
   return (
     <Navbar className="fixed top-4">

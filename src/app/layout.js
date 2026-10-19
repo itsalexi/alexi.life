@@ -116,6 +116,13 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <head>
+        {/* Day or night before first paint: saved choice, else the system setting. */}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Fixed local bootstrap; no interpolated data.
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("alx-theme");document.documentElement.dataset.theme=t||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}catch(e){}`,
+          }}
+        />
         {/* Structured Data - Person Schema */}
         <Script
           id="person-schema"

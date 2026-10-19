@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { socials } from "../../config/socials";
 import { beginSceneLoad } from "../../lib/sceneReadiness";
+import ThemeToggle from "../frame/ThemeToggle";
 import { mountHome } from "./homeController";
 import "./home.css";
 
@@ -116,12 +117,17 @@ function Cursor({ color, children }) {
   );
 }
 
-function FrameMedia({ item, className, sizes }) {
+// A file's picture at its own shape: wide promo cards stay whole; tall phone shots are trimmed
+// to a near-square (toward faces) so they don't shrink to slivers in a row of landscapes.
+const shape = (item) => Math.min(2, Math.max(1.1, item.ratio || 1.6));
+
+function FrameMedia({ item, className, sizes, cover }) {
+  const style = { "--r": shape(item) };
   if (item.logo) {
     return (
       <div
-        className={`${className} logo${item.wide ? " wide" : ""}`}
-        style={{ background: item.bg }}
+        className={`${className} logo${item.wide ? " wide" : ""}${cover ? " cover" : ""}`}
+        style={{ ...style, background: item.bg, color: item.ink }}
       >
         <Image
           src={item.logo}
@@ -129,11 +135,12 @@ function FrameMedia({ item, className, sizes }) {
           width={240}
           height={item.wide ? 120 : 240}
         />
+        {cover ? <span className="role">{item.meta}</span> : null}
       </div>
     );
   }
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       <Image src={item.img} alt="" fill sizes={sizes} />
     </div>
   );
@@ -184,6 +191,7 @@ function Folder({ folder }) {
                     key={item.title}
                     className="frame"
                     data-k={k}
+                    data-r={shape(item)}
                     role="button"
                     tabIndex={-1}
                     aria-label={`${item.title}, ${item.meta}`}
@@ -196,6 +204,7 @@ function Folder({ folder }) {
                       item={item}
                       className="fb"
                       sizes="(max-width: 900px) 90vw, 60vw"
+                      cover
                     />
                     <div className="ol">
                       <b />
@@ -288,6 +297,7 @@ export default function HomeScreen({ folders }) {
           </span>
         </div>
         <div className="hr">
+          <ThemeToggle />
           <a href={socials.resume} target="_blank" rel="noreferrer">
             Résumé
           </a>

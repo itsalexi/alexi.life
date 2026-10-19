@@ -14,6 +14,8 @@ images:
   - /images/projects/null-1762345061906.webp
   - /images/projects/null-1762345062040.webp
   - /images/projects/null-1762345062233.webp
+# the detail page's hero (the home thumbnail keeps `image`)
+heroImage: /images/projects/null-1762345062233.webp
 ---
 
 I gave my first talk to Ateneo Junior High School students as a guest of the Ateneo Computer Club. Thank you to Niq Suguitan and the club for inviting me.

@@ -1,0 +1,1075 @@
+/* Detail pages, editorial on the canvas (after Figma's Shortcut): no boxes, big type,
+   a full-width hero on a stage in the folder's color, text in an off-center column.
+   Builds on home.css (.alx) for the header, tokens and canvas. */
+html:has(.alx-page),
+body:has(.alx-page) {
+  background: var(--bg);
+}
+.alx.alx-page {
+  position: relative;
+  height: auto;
+  min-height: 100svh;
+  overflow: visible;
+  overflow-x: clip;
+}
+.alx-page header .me {
+  text-decoration: none;
+}
+.alx-page header .hr .hi {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.fp {
+  width: min(1240px, 100% - 96px);
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* ---------- head ---------- */
+.fp-head {
+  padding-top: 48px;
+}
+.fp-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+/* the folder's tab, small: it's the way back */
+.fp-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 13px;
+  border-radius: 10px 10px 3px 3px;
+  background: var(--c);
+  color: var(--k);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: translate 0.36s var(--settle);
+}
+.fp-tab:hover {
+  translate: 0 -3px;
+  transition: translate 0.45s var(--lift);
+}
+.alx .fp-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font:
+    500 12px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.fp-label i {
+  margin: 0 9px;
+  font-style: normal;
+  color: var(--mute);
+}
+.alx .fp-title {
+  max-width: 1120px;
+  margin-top: 30px;
+  font-size: clamp(42px, 6.2vw, 88px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--title-gray);
+  text-wrap: balance;
+}
+.fp-title b {
+  color: var(--ink);
+}
+.fp-byline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 34px;
+}
+.fp-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+.fp-author img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 3.5px var(--cur);
+}
+.fp-author b {
+  font-weight: 600;
+}
+.fp-author span {
+  color: var(--gray);
+}
+.fp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.fp-res {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font:
+    600 12px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+.fp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--btn);
+  color: var(--btn-ink) !important;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.32s var(--pill);
+}
+.fp-link:hover {
+  transform: scale(1.05) rotate(-2deg);
+}
+
+/* ---------- hero: the picture rises out of a stage in the folder's color ---------- */
+.alx .fp-hero {
+  margin-top: 40px;
+}
+.fp-stage {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 72px) clamp(20px, 8vw, 120px) 0;
+  border-radius: 6px;
+  background: var(--c);
+}
+.fp-hero-img {
+  position: relative;
+  aspect-ratio: 16 / 9.4;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+  background: var(--ph);
+  box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.45);
+  cursor: zoom-in;
+}
+.fp-hero-img img {
+  object-fit: cover;
+  object-position: top;
+}
+/* Alexi's cursor, parked on the hero like a collaborator looking at it */
+.fp-hero-cursor {
+  position: absolute;
+  left: 78%;
+  top: 34%;
+  z-index: 2;
+  pointer-events: none;
+  animation: fp-idle 5.5s ease-in-out infinite;
+}
+.fp-hero-cursor svg {
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+.fp-hero-cursor .nm {
+  position: absolute;
+  left: 14px;
+  top: 16px;
+  padding: 3px 8px;
+  border-radius: 999px 999px 999px 4px;
+  background: var(--cur);
+  color: #fff;
+  font:
+    600 12px -apple-system,
+    system-ui;
+  white-space: nowrap;
+}
+@keyframes fp-idle {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  35% {
+    transform: translate(-14px, 8px);
+  }
+  70% {
+    transform: translate(6px, -6px);
+  }
+}
+.fp-pin {
+  position: absolute;
+  right: 4%;
+  top: clamp(14px, 3vw, 28px);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 3px;
+  border-radius: 17px 17px 17px 3px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.12),
+    0 8px 18px -8px rgba(0, 0, 0, 0.35);
+}
+.fp-pin img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.fp-pin em {
+  max-width: 0;
+  overflow: hidden;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    max-width 0.35s var(--lift),
+    padding 0.35s var(--lift);
+}
+.fp-pin:hover em {
+  max-width: 280px;
+  padding: 0 10px 0 8px;
+}
+
+/* ---------- body: contents column + an off-center text column ---------- */
+.fp-body {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 680px) minmax(0, 1fr);
+  column-gap: clamp(32px, 5vw, 72px);
+  padding-top: 72px;
+}
+.fp-side-in {
+  position: sticky;
+  top: 32px;
+}
+.alx .fp-side-h {
+  margin-bottom: 12px;
+  font:
+    500 11px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray2);
+}
+.fp-side-h span {
+  color: var(--mute);
+}
+.fp-toc {
+  list-style: none;
+}
+.fp-toc a {
+  display: flex;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--gray2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.fp-toc a span {
+  flex: none;
+  width: 18px;
+  font:
+    500 11px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  line-height: 19px;
+  color: var(--mute);
+  transition: color 0.2s;
+}
+.fp-toc a:hover {
+  color: var(--ink);
+}
+.fp-toc a.on {
+  font-weight: 600;
+  color: var(--ink);
+}
+.fp-toc a.on span {
+  color: #0d99ff;
+}
+.alx .fp-side-group {
+  margin-top: 30px;
+}
+.fp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.fp-tags span {
+  padding: 4px 9px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  font:
+    500 11px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.fp-more {
+  list-style: none;
+}
+.fp-more a {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--text2);
+  text-decoration: none;
+}
+.fp-more a span {
+  color: var(--mute);
+  transition:
+    transform 0.3s var(--lift),
+    color 0.2s;
+}
+.fp-more a:hover {
+  color: var(--ink);
+}
+.fp-more a:hover span {
+  color: var(--ink);
+  transform: translateX(3px);
+}
+.alx .fp-more-all {
+  margin-top: 6px;
+  color: var(--gray2);
+}
+
+/* ---------- reading ---------- */
+.fp-prose {
+  counter-reset: fp-section;
+  font-size: 18.5px;
+  line-height: 1.66;
+  letter-spacing: -0.011em;
+  color: var(--text);
+  text-wrap: pretty;
+}
+.alx .fp-prose > * + * {
+  margin-top: 1em;
+}
+.alx .fp-prose > :first-child {
+  margin-top: 0;
+}
+/* the opening paragraph is a lede, like the top of a Shortcut post */
+.alx .fp-prose > p:first-child,
+.alx .fp-prose > h2:first-child + p,
+.alx .fp-prose > .fp-glance + p {
+  font-size: clamp(22px, 2vw, 27px);
+  font-weight: 500;
+  line-height: 1.38;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+}
+.alx .fp-prose h2 {
+  counter-increment: fp-section;
+  margin-top: 2.2em;
+  scroll-margin-top: 32px;
+  font-size: clamp(32px, 3.4vw, 46px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.alx .fp-prose h2::before {
+  content: counter(fp-section, decimal-leading-zero);
+  display: block;
+  margin-bottom: 12px;
+  font:
+    500 12px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.04em;
+  color: #0d99ff;
+}
+.alx .fp-prose h2 + * {
+  margin-top: 0.8em;
+}
+.alx .fp-prose h3 {
+  margin-top: 2em;
+  scroll-margin-top: 32px;
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.alx .fp-prose h3 + * {
+  margin-top: 0.5em;
+}
+.fp-prose strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.fp-prose em {
+  color: var(--ink);
+}
+.alx .fp-prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(13, 153, 255, 0.55);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s;
+}
+.alx .fp-prose a:hover {
+  text-decoration-color: #0d99ff;
+}
+.fp-prose code {
+  padding: 0.1em 0.35em;
+  border-radius: 6px;
+  background: var(--hover);
+  font:
+    0.86em ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  color: var(--ink);
+}
+/* lists: Figma's selection handles as bullets */
+.alx .fp-prose ul,
+.alx .fp-prose ol {
+  padding-left: 0;
+  list-style: none;
+}
+.alx .fp-prose li {
+  position: relative;
+  padding-left: 26px;
+}
+.alx .fp-prose li + li {
+  margin-top: 0.55em;
+}
+.fp-prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  background: var(--surface);
+  border: 1.5px solid #0d99ff;
+}
+.alx .fp-prose ol {
+  counter-reset: fp-li;
+}
+.fp-prose ol > li::before {
+  counter-increment: fp-li;
+  content: counter(fp-li);
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  font:
+    600 13px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  color: #0d99ff;
+}
+/* quotes are comments pinned to the page */
+.alx .fp-prose blockquote {
+  position: relative;
+  padding: 16px 20px 16px 58px;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.1),
+    0 10px 24px -16px rgba(0, 0, 0, 0.3);
+  font-size: 17px;
+  color: var(--ink);
+}
+.fp-prose blockquote::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 15px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: url(/avatar.webp) center 20% / cover;
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 3.5px var(--cur);
+}
+.alx .fp-prose blockquote p + p {
+  margin-top: 0.6em;
+}
+.alx .fp-prose hr {
+  margin: 2.6em 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+.alx .fp-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.alx .fp-prose th,
+.alx .fp-prose td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+/* "at a glance" on hackathons: hairlines, no box */
+.alx .fp-prose .fp-glance {
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+/* pictures in the write-up break a little wider than the text, captions underneath */
+.alx .fp-img {
+  display: block;
+  width: calc(100% + min(200px, 14vw));
+  margin: 2.4em 0;
+}
+.fp-img img {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+  cursor: zoom-in;
+}
+.alx .fp-cap {
+  display: block;
+  max-width: 640px;
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--gray);
+}
+.fp-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  width: calc(100% + min(200px, 14vw));
+  margin-top: 2.4em;
+}
+.fp-shot-img {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--ph);
+  cursor: zoom-in;
+  transition: transform 0.45s var(--lift);
+}
+.fp-shot-img img {
+  object-fit: cover;
+}
+.fp-shot:hover .fp-shot-img {
+  transform: translateY(-3px) rotate(-1deg);
+}
+
+/* ---------- next: big type, like the next story ---------- */
+.fp-next {
+  display: block;
+  margin-top: 120px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+.fp-next-label {
+  font:
+    500 12px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.fp-next-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+  margin-top: 18px;
+}
+.fp-next-title {
+  max-width: 920px;
+  font-size: clamp(36px, 4.8vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+  transition: color 0.25s;
+}
+.fp-next-title span {
+  display: inline-block;
+  transition: transform 0.4s var(--lift);
+}
+.fp-next:hover .fp-next-title span {
+  transform: translateX(10px);
+}
+.fp-next-img {
+  flex: none;
+  width: clamp(160px, 22vw, 300px);
+  /* the picture's own shape, within reason, so wide promo cards aren't cut mid-title */
+  aspect-ratio: clamp(1.3, var(--r, 1.6), 1.95);
+  overflow: hidden;
+  border: 5px solid var(--surface);
+  border-radius: 10px;
+  background: var(--ph);
+  box-shadow: 0 16px 30px -18px rgba(0, 0, 0, 0.45);
+  transform: rotate(3deg);
+  transition: transform 0.5s var(--lift);
+}
+.fp-next:hover .fp-next-img {
+  transform: rotate(-2deg) translateY(-6px);
+}
+.fp-next-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fp-next-img.logo {
+  display: grid;
+  place-items: center;
+}
+.fp-next-img.logo img {
+  width: 24%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 22%;
+}
+.fp-next-line {
+  display: block;
+  max-width: 640px;
+  margin-top: 14px;
+  font-size: 19px;
+  line-height: 1.4;
+  color: var(--gray);
+}
+
+/* ---------- the page opens on arrival (FolderPageFx reveals it) ---------- */
+.alx-page .fp {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .alx-page .fp {
+    opacity: 1;
+  }
+  .fp-hero-cursor {
+    animation: none;
+  }
+}
+
+/* ---------- zoom to selection ---------- */
+.fp-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  visibility: hidden;
+  opacity: 0;
+  background-color: var(--scrim);
+  background-image: radial-gradient(
+    circle,
+    var(--canvas-dot) 1px,
+    transparent 1.3px
+  );
+  background-size: 24px 24px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  cursor: zoom-out;
+}
+.fp-zoom[data-open="true"] {
+  visibility: visible;
+}
+.fp-zoom-img {
+  position: absolute;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 1.5px var(--fig),
+    0 40px 80px -40px rgba(0, 0, 0, 0.45);
+}
+.alx .fp-zoom-fn {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  display: flex;
+  gap: 18px;
+  translate: -50% 0;
+  font:
+    500 12px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray);
+  white-space: nowrap;
+}
+
+/* ---------- reading bar ---------- */
+.fp-progress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 70;
+  width: 100%;
+  height: 2.5px;
+  background: #0d99ff;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+/* ---------- Alexi's cursor, dropping by ---------- */
+.fp-alexi {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.fp-alexi svg {
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+.fp-alexi .nm,
+.fp-alexi .chat {
+  position: absolute;
+  left: 14px;
+  top: 16px;
+  padding: 3px 8px;
+  border-radius: 999px 999px 999px 4px;
+  background: var(--cur);
+  color: #fff;
+  font:
+    600 12px -apple-system,
+    system-ui;
+  white-space: nowrap;
+}
+.fp-alexi .chat {
+  top: 40px;
+  padding: 6px 11px;
+  border-radius: 4px 14px 14px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transform: scale(0.85);
+  transform-origin: 0 0;
+  transition:
+    opacity 0.2s,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fp-alexi .chat.on {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 1100px) {
+  .fp-body {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+  .alx .fp-img,
+  .fp-gallery {
+    width: 100%;
+  }
+}
+@media (max-width: 860px) {
+  .fp {
+    width: calc(100% - 40px);
+  }
+  .fp-head {
+    padding-top: 24px;
+  }
+  .fp-body {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 56px;
+    padding-top: 44px;
+  }
+  .fp-side nav[aria-label="Sections"] {
+    display: none;
+  }
+  .fp-side-in {
+    position: static;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .alx .fp-side-group:first-child {
+    margin-top: 0;
+  }
+  .fp-prose {
+    font-size: 17px;
+  }
+  .alx .fp-prose h2 {
+    font-size: 30px;
+  }
+  .fp-next {
+    margin-top: 64px;
+  }
+  .fp-next-row {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+  .fp-hero-cursor {
+    display: none;
+  }
+}
+
+/* some write-ups use #### for their sections */
+.alx .fp-prose h4 {
+  margin-top: 2em;
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.alx .fp-prose > h4:first-child {
+  margin-top: 0;
+}
+.alx .fp-prose h4 + * {
+  margin-top: 0.5em;
+}
+.alx .fp-prose > h4:first-child + p {
+  font-size: clamp(22px, 2vw, 27px);
+  font-weight: 500;
+  line-height: 1.38;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+}
+@media (max-width: 600px) {
+  .fp-author span {
+    display: none;
+  }
+}
+
+/* ---------- sidebar: the rest of the folder, as little frames ---------- */
+.alx .fp-side-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fp-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 2.5px;
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.fp-files {
+  list-style: none;
+}
+.fp-files a {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 0 -8px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.fp-files a:hover {
+  background: var(--hover);
+}
+.fp-file-thumb {
+  /* the picture's own shape, within reason, so wide promo cards aren't cut mid-title */
+  aspect-ratio: clamp(1.3, var(--r, 1.6), 1.95);
+  overflow: hidden;
+  border: 2.5px solid var(--surface);
+  border-radius: 6px;
+  background: var(--ph);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.1),
+    0 5px 10px -6px rgba(0, 0, 0, 0.45);
+  transition: transform 0.45s var(--lift);
+}
+.fp-files a:hover .fp-file-thumb {
+  transform: rotate(-3deg) translateY(-2px);
+}
+.fp-file-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fp-file-thumb.logo {
+  display: grid;
+  place-items: center;
+}
+.fp-file-thumb.logo img {
+  width: 34%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 22%;
+}
+.fp-file-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.fp-file-text b {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fp-file-text small {
+  overflow: hidden;
+  margin-top: 1px;
+  font-size: 12.5px;
+  color: var(--gray2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* "Open the folder": a small tab in the folder's color */
+.fp-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  margin-top: 14px;
+  padding: 0 12px;
+  border-radius: 9px 9px 3px 3px;
+  background: var(--c);
+  color: var(--k);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: translate 0.36s var(--settle);
+}
+.fp-open:hover {
+  translate: 0 -3px;
+  transition: translate 0.45s var(--lift);
+}
+/* stack / tags sit in the byline, mono like the label above */
+.fp-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  font:
+    500 11px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+@media (max-width: 860px) {
+  .fp-files {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 4px 16px;
+  }
+}
+
+/* ---------- pictures: framed by their real shape ---------- */
+.fp-hero-img.is-photo img {
+  object-position: 50% 32%;
+}
+.fp-hero-img.is-ui img {
+  object-position: 50% 0;
+}
+/* portraits stand on the stage at their own shape instead of being cropped wide */
+.fp-hero-img.portrait {
+  width: auto;
+  max-width: 100%;
+  height: min(70vh, 660px);
+  margin: 0 auto;
+  border-radius: 10px;
+}
+.fp-stage:has(.portrait) {
+  padding-bottom: clamp(28px, 5vw, 72px);
+}
+/* roles: the company's logo on its own brand color */
+.fp-stage.brand {
+  box-shadow: inset 0 0 0 1px var(--line);
+  display: grid;
+  place-items: center;
+  min-height: clamp(260px, 34vw, 440px);
+  padding: clamp(40px, 7vw, 96px);
+}
+.fp-hero-logo img {
+  display: block;
+  width: clamp(96px, 11vw, 150px);
+  height: auto;
+  border-radius: 24%;
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.45);
+}
+.fp-hero-logo img.wide {
+  width: clamp(220px, 30vw, 420px);
+  border-radius: 0;
+  box-shadow: none;
+}
+/* gallery: each photo keeps its own proportions, laid out like a contact sheet */
+.alx .fp-gallery {
+  display: block;
+  columns: 3 200px;
+  column-gap: 14px;
+}
+.alx .fp-shot {
+  break-inside: avoid;
+  margin-bottom: 14px;
+}
+.fp-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  cursor: zoom-in;
+  transition: transform 0.45s var(--lift);
+}
+.fp-shot:hover img {
+  transform: translateY(-3px) rotate(-0.6deg);
+}
+
+/* folder tabs always use the folder's own ink (beats the generic link color) */
+.alx .fp-tab,
+.alx .fp-open {
+  color: var(--k);
+}

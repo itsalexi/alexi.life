@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { socials } from "../config/socials";
+import { isCanvasPage } from "../lib/canvas-pages";
 
 const links = [
   { name: "Projects", href: "/projects" },
@@ -24,8 +25,8 @@ export default function Footer() {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
-  // Home is one screen; it doesn't scroll to a footer.
-  if (pathname === "/") return null;
+  // Canvas pages end on their own footer (or none, on home).
+  if (isCanvasPage(pathname)) return null;
 
   return (
     <footer className="relative z-10 mx-auto mt-24 w-full max-w-6xl px-5 pb-10 pt-12 sm:px-8 lg:px-10">

@@ -1,3 +1,5 @@
+import { isCanvasPage } from "./canvas-pages.js";
+
 const scenes = new Map();
 
 function getScene(key) {
@@ -26,6 +28,9 @@ export function beginSceneLoad(key) {
 export function waitForSceneReady(pathname, { signal } = {}) {
   if (signal?.aborted) return Promise.resolve({ status: "fallback" });
   if (pathname?.startsWith("/admin"))
+    return Promise.resolve({ status: "ready" });
+  // canvas detail pages have no 3D scene to wait for
+  if (pathname !== "/" && isCanvasPage(pathname))
     return Promise.resolve({ status: "ready" });
 
   const scene = getScene(pathname === "/" ? "home" : "moonlit");
