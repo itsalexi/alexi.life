@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   markPreloaderReady,
@@ -7,6 +8,7 @@ import {
 } from "../../hooks/usePreloaderReady";
 import { waitForSceneReady } from "../../lib/sceneReadiness";
 import styles from "./preloader.module.css";
+import { selectSignature, zoomSelectionToFit } from "./preloaderHome";
 import { SvgLoader } from "./svg-loader";
 
 // Initial screen slots of the same eight hero fireflies; available before Three loads.
@@ -36,11 +38,45 @@ async function decodeVisibleImages() {
   await Promise.allSettled(images.map((image) => image.decode()));
 }
 
+// Home: Alexi's multiplayer cursor holds the pen. It reads the stroke's progress every
+// frame (so it stays in sync with the CSS drawing) and sits on the tip of the line.
+function followPen(path, pen, signal, bar) {
+  const svg = path?.ownerSVGElement;
+  if (!svg || !pen) return Promise.resolve();
+  const total = path.getTotalLength();
+  return new Promise((resolve) => {
+    let raf;
+    const step = () => {
+      if (signal.aborted) return resolve();
+      const scale = svg.clientWidth / 100;
+      const offset =
+        Number.parseFloat(getComputedStyle(path).strokeDashoffset) || 0;
+      const progress = Math.min(1, Math.max(0, 1 - offset / 100));
+      const point = path.getPointAtLength(total * progress);
+      pen.style.transform = `translate(${point.x * scale}px, ${point.y * scale}px)`;
+      if (progress > 0.002) pen.dataset.on = "true";
+      // Figma-style loading bar: drawing takes it most of the way
+      if (bar) bar.style.transform = `scaleX(${0.08 + progress * 0.62})`;
+      if (progress >= 1) return resolve();
+      raf = requestAnimationFrame(step);
+    };
+    signal.addEventListener("abort", () => cancelAnimationFrame(raf), {
+      once: true,
+    });
+    step();
+  });
+}
+
 export function Preloader() {
   const [phase, setPhase] = useState("loading");
   const [longWait, setLongWait] = useState(false);
   const revealRef = useRef(() => {});
   const signatureRef = useRef(null);
+  const penRef = useRef(null);
+  const selectRef = useRef(null);
+  const barRef = useRef(null);
+  // Home is a light Figma-style canvas; it gets its own light preloader so the reveal is seamless.
+  const home = usePathname() === "/";
 
   useEffect(() => {
     const controller = new AbortController();
@@ -52,6 +88,7 @@ export function Preloader() {
     let frame;
     let releasing = false;
     const previousOverflow = root.style.overflow;
+    const onHome = location.pathname === "/" && !reduced;
 
     const later = (callback, delay) => {
       const timer = setTimeout(() => {
@@ -71,6 +108,15 @@ export function Preloader() {
       setLongWait(false);
       root.dataset.preloaderPhase = "revealing";
       setPhase("revealing");
+      // Home: the selection zooms out to frame the page as the canvas clears.
+      // (Before marking ready, so the page can pick up the cursor hand-off.)
+      if (onHome)
+        zoomSelectionToFit({
+          wrapper: signatureRef.current,
+          select: selectRef.current,
+          pen: penRef.current,
+          bar: barRef.current,
+        });
       markPreloaderReady();
       later(
         () => {
@@ -80,7 +126,7 @@ export function Preloader() {
           unlock();
           setPhase("done");
         },
-        reduced ? 160 : 1200,
+        reduced ? 160 : onHome ? 1300 : 1200,
       );
     };
     revealRef.current = reveal;
@@ -109,8 +155,22 @@ export function Preloader() {
       for (const animation of drawing) {
         if (animation.playState === "paused") animation.play();
       }
-      const signatureDrawn = Promise.allSettled(
-        drawing.map((animation) => animation.finished),
+      const penDone = onHome
+        ? followPen(signature, penRef.current, signal, barRef.current)
+        : Promise.resolve();
+      const signatureDrawn = Promise.allSettled([
+        ...drawing.map((animation) => animation.finished),
+        penDone,
+      ]).then(
+        () =>
+          // On home: drag a selection around it, then the cursor says hi.
+          onHome &&
+          selectSignature({
+            pen: penRef.current,
+            select: selectRef.current,
+            bar: barRef.current,
+            signal,
+          }),
       );
       const assetsReady = Promise.allSettled([
         Promise.resolve(document.fonts?.ready),
@@ -133,7 +193,11 @@ export function Preloader() {
   if (phase === "done") return null;
 
   return (
-    <div className={styles.overlay} data-phase={phase}>
+    <div
+      className={styles.overlay}
+      data-phase={phase}
+      data-variant={home ? "home" : undefined}
+    >
       <div className={styles.veil} aria-hidden="true" />
       <div
         className={styles.ambient}
@@ -162,7 +226,32 @@ export function Preloader() {
       </div>
       <div ref={signatureRef} className={styles.signature} aria-hidden="true">
         <SvgLoader size={80} />
+        {home && (
+          <span ref={penRef} className={styles.pen}>
+            <svg width="18" height="20" viewBox="0 0 18 20" aria-hidden="true">
+              <path
+                d="M1.5 1.5 L16 9.2 L9.4 10.8 L6.6 17.6 Z"
+                fill="#5470ff"
+                stroke="#fff"
+                strokeWidth="1.6"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <b>Alexi</b>
+            <em>hi, come in</em>
+          </span>
+        )}
+        {home && (
+          <span ref={selectRef} className={styles.select}>
+            <i />
+            <i />
+            <i />
+            <i />
+            <em>Signature</em>
+          </span>
+        )}
       </div>
+      {home && <span ref={barRef} className={styles.bar} aria-hidden="true" />}
       <output className="sr-only" aria-live="polite">
         {phase === "revealing" ? "Page ready." : "Loading the page."}
       </output>

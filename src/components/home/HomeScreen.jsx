@@ -14,12 +14,14 @@ const pad = (n) => String(n).padStart(2, "0");
 const PILLS = [
   {
     name: "Casper Studios",
+    tip: "AI engineering · now",
     logo: "/images/home/casper.jpg",
     bg: "linear-gradient(120deg,#6d2cf5,#d63af0)",
     ink: "#fff",
   },
   {
     name: "NextPay",
+    tip: "software engineering · 2025–26",
     logo: "/images/logos/nextpay.webp",
     bg: "#5470ff",
     ink: "#fff",
@@ -27,16 +29,57 @@ const PILLS = [
   },
   {
     name: "Swarm",
+    tip: "software engineering · 2026",
     logo: "/images/logos/swarm.webp",
     bg: "#0b0b18",
     ink: "#fff",
   },
   {
     name: "Bytespace",
+    tip: "product engineering · 2026",
     logo: "/images/logos/bytespace.webp",
     bg: "#f1ead9",
     ink: "#1d1d1f",
     alt: true,
+  },
+];
+
+// the contact screen; each row borrows a folder color on hover
+const CHANNELS = [
+  {
+    name: "GitHub",
+    handle: "@itsalexi",
+    href: socials.github,
+    color: "#5470ff",
+    ink: "#ffffff",
+  },
+  {
+    name: "LinkedIn",
+    handle: "in/alexicanamo",
+    href: socials.linkedin,
+    color: "#ffd34d",
+    ink: "#1d1d1f",
+  },
+  {
+    name: "Instagram",
+    handle: "@alexi_canamo",
+    href: socials.instagram,
+    color: "#ff4f8b",
+    ink: "#ffffff",
+  },
+  {
+    name: "Discord",
+    handle: "discord.alexi.life",
+    href: socials.discord,
+    color: "#9ee0b5",
+    ink: "#10301e",
+  },
+  {
+    name: "Résumé",
+    handle: "cv.alexi.life",
+    href: socials.resume,
+    color: "#f5f5f3",
+    ink: "#1d1d1f",
   },
 ];
 
@@ -47,6 +90,7 @@ function Pill({ pill }) {
       className={pill.alt ? "pill alt" : "pill"}
       data-open="0"
       data-cur=""
+      data-tip={pill.tip}
       style={{ "--b": pill.bg, "--i": pill.ink }}
     >
       <Image src={pill.logo} alt="" width={40} height={40} />
@@ -232,18 +276,28 @@ export default function HomeScreen({ folders }) {
     <div className="alx" ref={rootRef}>
       <header>
         <div className="me">
-          <Image src="/avatar.webp" alt="" width={56} height={56} />
-          Alexi Canamo
-        </div>
-        <div className="clock" data-role="clock">
-          MANILA
+          <span className="av">
+            <Image src="/avatar.webp" alt="" width={68} height={68} />
+            <span className="av-chat">that’s me</span>
+          </span>
+          <span className="who">
+            <b>Alexi Canamo</b>
+            <span className="status" data-role="clock">
+              Manila
+            </span>
+          </span>
         </div>
         <div className="hr">
           <a href={socials.resume} target="_blank" rel="noreferrer">
             Résumé
           </a>
-          <button type="button" data-role="copy-top">
-            Copy email
+          <button
+            type="button"
+            className="hi"
+            data-role="say-hi"
+            aria-haspopup="dialog"
+          >
+            Say hi
           </button>
         </div>
       </header>
@@ -257,7 +311,8 @@ export default function HomeScreen({ folders }) {
             aria-label="Alexi, drinking matcha"
             data-cur="that's me, matcha in hand"
           />{" "}
-          build things people{" "}
+          build <br className="br-sm" />
+          things people{" "}
           <span className="sel" data-cur="">
             actually use.
             <i />
@@ -270,8 +325,8 @@ export default function HomeScreen({ folders }) {
         </h1>
         <p className="para">
           <strong>I’m Alexi, 19, a product and AI engineer in Manila.</strong>{" "}
-          Right now I’m an AI engineering intern at <Pill pill={PILLS[0]} />.
-          Before that, I built at <Pill pill={PILLS[1]} />,{" "}
+          I’m building AI products at <Pill pill={PILLS[0]} />, and I’ve shipped
+          end to end with teams like <Pill pill={PILLS[1]} />,{" "}
           <Pill pill={PILLS[2]} /> and <Pill pill={PILLS[3]} />.
         </p>
         <p className="links">
@@ -280,6 +335,14 @@ export default function HomeScreen({ folders }) {
           </a>
           <a href={socials.linkedin} target="_blank" rel="noreferrer">
             LinkedIn
+          </a>
+          <a
+            className="only-sm"
+            href={socials.resume}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Résumé
           </a>
           <button type="button" className="mail" data-role="mail">
             {socials.email}
@@ -311,8 +374,115 @@ export default function HomeScreen({ folders }) {
           <span className="tip">enter to email it · esc</span>
         </Cursor>
       </div>
-      <div className="hsel" aria-hidden="true">
-        <span />
+      <div
+        className="hello"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="hello-title"
+      >
+        <div className="hello-top">
+          <span className="hello-time hello-anim" data-role="hello-time">
+            Manila
+          </span>
+          <button type="button" className="hello-x" aria-label="Close">
+            Close <span aria-hidden="true">✕</span>
+          </button>
+        </div>
+        <div className="hello-center">
+          <h2 id="hello-title" className="hello-anim">
+            <span className="hello-sel">
+              Say hi.
+              <i aria-hidden="true" />
+              <b aria-hidden="true" />
+              <b aria-hidden="true" />
+              <b aria-hidden="true" />
+              <b aria-hidden="true" />
+              <em aria-hidden="true">Heading</em>
+            </span>
+          </h2>
+          {/* a Figma comment thread: Alexi's comment, your reply opens your mail app */}
+          <form className="hello-thread hello-anim" data-role="hello-note">
+            <div className="hello-msg">
+              <Image src="/avatar.webp" alt="" width={64} height={64} />
+              <div>
+                <p className="hello-msg-head">
+                  <b>Alexi Canamo</b>
+                  <span>just now</span>
+                </p>
+                <p className="hello-msg-text">
+                  hi! what are we making? An idea, a role, or just saying hi,
+                  all good. I read everything.
+                </p>
+              </div>
+            </div>
+            <div className="hello-reply">
+              <label className="sr-only" htmlFor="hello-note-text">
+                Reply to Alexi
+              </label>
+              <textarea
+                id="hello-note-text"
+                rows={1}
+                maxLength={600}
+                placeholder="Reply…"
+              />
+              <button type="submit" aria-label="Send" disabled>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M7 12V2M2.5 6.5 7 2l4.5 4.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </form>
+          <p className="hello-or hello-anim">
+            Sending opens your mail app. Or copy{" "}
+            <button type="button" className="hello-mail" data-role="hello-mail">
+              <span>{socials.email}</span>
+              <em>Copy</em>
+            </button>
+          </p>
+        </div>
+        <nav className="hello-tabs" aria-label="Elsewhere">
+          {CHANNELS.map((channel) => (
+            <a
+              key={channel.name}
+              className="hello-tab hello-anim"
+              href={channel.href}
+              target="_blank"
+              rel="noreferrer"
+              data-name={channel.name}
+              style={{ "--c": channel.color, "--k": channel.ink }}
+            >
+              <b>
+                {channel.name} <i aria-hidden="true">↗</i>
+              </b>
+              <small>{channel.handle}</small>
+            </a>
+          ))}
+        </nav>
+        <div className="hello-joined" aria-hidden="true">
+          <i />
+          You joined Alexi’s file
+        </div>
+        <div className="hello-alexi" aria-hidden="true">
+          <Cursor color="#5470ff">
+            <span className="nm">Alexi</span>
+            <span className="chat" />
+          </Cursor>
+        </div>
+        <span className="hello-you" aria-hidden="true">
+          You
+        </span>
       </div>
       <output className="toast">
         <span>Copied to clipboard</span>

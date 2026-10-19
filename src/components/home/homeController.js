@@ -4,7 +4,8 @@
 // Motion rules we tuned by measuring frames: springs with a damping ratio around 0.9 to 1
 // (no overshoot), restDelta/restSpeed high enough that nothing crawls the last pixel, start
 // transforms set before anything becomes visible, and stacking never changes mid-flight.
-import { animate as motionAnimate } from "motion";
+import { animate as motionAnimate, stagger } from "motion";
+import { PRELOADER_READY_EVENT } from "../../hooks/usePreloaderReady";
 
 const spring = (stiffness, damping) => ({
   type: "spring",
@@ -21,6 +22,7 @@ const SETTLE = spring(120, 19.5); // the canvas settling after the folder stops
 const TUCK = spring(260, 29); // photo + papers slipping into the folder
 const ZOOM = spring(150, 24.5); // canvas camera: a glide, no bounce
 const PEEK_CLOSED = 66;
+const TUCKED = 96; // far enough down that no edge of the photo shows above the folder
 const FRONT = 3;
 
 const esc = (value) =>
@@ -75,6 +77,8 @@ export function mountHome(root, { folders, email, navigate }) {
   let queued = null;
   let hovered = -1;
   let hoverT = null;
+  // Alexi's cursor doubles as a guide; set up further down (no-op on touch / reduced motion)
+  let hint = () => {};
   const baseY = () => col.offsetHeight - PEEK_CLOSED;
 
   const layoutTabs = () => {
@@ -107,7 +111,7 @@ export function mountHome(root, { folders, email, navigate }) {
   };
   const tuckInstant = (i) => {
     set($b(i, ".papers"), { y: 18 });
-    set($b(i, ".print"), { y: 70, rotate: 2 });
+    set($b(i, ".print"), { y: TUCKED, rotate: 2 });
   };
   const showInsides = (i, opened) => {
     $b(i, ".sheet .inner").style.opacity = opened ? 1 : 0;
@@ -133,13 +137,16 @@ export function mountHome(root, { folders, email, navigate }) {
     );
     animate(
       pr,
-      { y: show ? (lift ? -10 : 0) : 70, rotate: show ? (lift ? 1.5 : 4) : 2 },
+      {
+        y: show ? (lift ? -10 : 0) : TUCKED,
+        rotate: show ? (lift ? 1.5 : 4) : 2,
+      },
       show ? spring(280, 29) : spring(320, 34),
     );
   };
   const tuck = (i) => {
     animate($b(i, ".papers"), { y: 18 }, TUCK);
-    animate($b(i, ".print"), { y: 70, rotate: 2 }, TUCK);
+    animate($b(i, ".print"), { y: TUCKED, rotate: 2 }, TUCK);
   };
   const settleIn = (i, delay) => {
     const g = $b(i, ".sheet .inner");
@@ -169,6 +176,12 @@ export function mountHome(root, { folders, email, navigate }) {
     await d.finished;
     if (!alive) return;
     busy = false;
+    if (cv[i].el.offsetParent)
+      hint(
+        "zoom-in",
+        () => cv[i].frames[1] ?? cv[i].frames[0],
+        "click one to zoom in",
+      );
     flush();
   }
 
@@ -250,6 +263,21 @@ export function mountHome(root, { folders, email, navigate }) {
     if (hovered >= 0 && hovered !== i) liftOff(hovered, true);
     hovered = i;
     animate(units[i], { y: baseY() - 14 }, spring(320, 28));
+    // the folder feels full: its file count ticks up and the papers inside rustle
+    const count = tabs[i].querySelector("small");
+    const n = folders[i].items.length;
+    animate(0, n, {
+      duration: 0.42,
+      ease: "easeOut",
+      onUpdate: (v) => {
+        count.textContent = String(Math.round(v)).padStart(2, "0");
+      },
+    });
+    animate(
+      $b(i, ".papers i:nth-child(2)"),
+      { rotate: [-0.8, -2.6, 0.4, -0.8] },
+      { duration: 0.55, ease: "easeInOut" },
+    );
     if (open < 0) showPeekers(i, true, true);
     if (open < 0 && i !== FRONT) showPeekers(FRONT, false);
   }
@@ -385,6 +413,8 @@ export function mountHome(root, { folders, email, navigate }) {
     const c = cv[i];
     if (k === c.at) return;
     const first = c.at < 0;
+    if (k >= 0)
+      hint("flip", () => c.cap.querySelector(".hint"), "← → to flip through");
     c.at = k;
     c.el.classList.toggle("zoomed", k >= 0);
     c.frames.forEach((fr, j) => {
@@ -443,9 +473,13 @@ export function mountHome(root, { folders, email, navigate }) {
   });
 
   // ---------------- wire up ----------------
+  // First load: the page assembles as the preloader clears (hero rises in, folders slide up
+  // into the drawer). Coming back to / later, everything is simply already there.
+  const intro =
+    !reduce && document.documentElement.dataset.preloaderReady !== "true";
   layoutTabs();
   units.forEach((u, i) => {
-    set(u, { y: baseY() });
+    set(u, { y: intro ? col.offsetHeight + 40 : baseY() });
     showInsides(i, false);
   });
   zs();
@@ -453,6 +487,33 @@ export function mountHome(root, { folders, email, navigate }) {
     layoutCanvas(i);
     resetCanvas(i);
   });
+
+  const runIntro = () => {
+    busy = true;
+    const parts = [$("header"), ...root.querySelectorAll(".hero > *")];
+    parts.forEach((el, k) => {
+      animate(
+        el,
+        { opacity: [0, 1], y: [16, 0], filter: ["blur(6px)", "blur(0px)"] },
+        { duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.3 + k * 0.07 },
+      );
+    });
+    $(".drawer").style.opacity = 1;
+    const lands = units.map((u, i) =>
+      animate(
+        u,
+        { y: baseY() },
+        { ...spring(170, 25), delay: 0.52 + i * 0.06 },
+      ),
+    );
+    Promise.all(lands.map((a) => a.finished)).then(() => {
+      if (!alive) return;
+      for (const el of parts) el.style.filter = "";
+      busy = false;
+      flush();
+    });
+  };
+  if (intro) on(window, PRELOADER_READY_EVENT, runIntro, { once: true });
 
   tabs.forEach((t, i) => {
     on(t, "click", () => onTab(i));
@@ -526,8 +587,30 @@ export function mountHome(root, { folders, email, navigate }) {
     hour: "numeric",
     minute: "2-digit",
   });
+  const hourFmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Manila",
+    hour: "numeric",
+    hourCycle: "h23",
+  });
+  // what Alexi's probably doing right now, by Manila time
+  const quip = (h) =>
+    h < 5
+      ? "should be asleep"
+      : h < 9
+        ? "on matcha #1"
+        : h < 12
+          ? "deep in the code"
+          : h < 14
+            ? "lunch, probably"
+            : h < 18
+              ? "shipping"
+              : h < 22
+                ? "still shipping"
+                : "should be asleep";
   const tick = () => {
-    clock.textContent = `MANILA · ${fmt.format(new Date()).toUpperCase()}`;
+    const now = new Date();
+    const hour = Number(hourFmt.format(now));
+    clock.innerHTML = `<span>${fmt.format(now)}</span><span class="loc">&nbsp;in Manila</span><span>&nbsp;·&nbsp;${quip(hour)}</span>`;
   };
   tick();
   const clockT = setInterval(tick, 15000);
@@ -561,50 +644,282 @@ export function mountHome(root, { folders, email, navigate }) {
       btn.textContent = label;
     }, 1600);
   };
-  const copyTop = $('[data-role="copy-top"]');
-  on(copyTop, "click", copy(copyTop, "Copy email", "Copied ✓"));
+  // ---------------- "Say hi": a dark contact screen that spreads out of the button ----------------
+  const sayHi = $('[data-role="say-hi"]');
+  const hello = $(".hello");
+  const helloParts = [...hello.querySelectorAll(".hello-anim")];
+  const helloMail = $('[data-role="hello-mail"]');
+  const helloTime = $('[data-role="hello-time"]');
+  let helloOpen = false;
+  let helloAnim = null;
+  hello.inert = true;
+  const circle = (r, x, y) => `circle(${r}px at ${x}px ${y}px)`;
+  const origin = () => {
+    const r = sayHi.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    return {
+      x,
+      y,
+      r0: r.height / 2,
+      R: Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)),
+    };
+  };
+  // The circle's center is pinned to the button; only the radius animates (a plain number,
+  // written every frame), so it grows out of "Say hi" in every browser.
+  let helloR = 0;
+  const grow = (from, to, opts) => {
+    const { x, y } = origin();
+    helloAnim?.stop();
+    hello.style.clipPath = circle(from, x, y);
+    helloAnim = animate(from, to, {
+      ...opts,
+      onUpdate: (r) => {
+        helloR = r;
+        hello.style.clipPath = circle(r, x, y);
+      },
+    });
+    return helloAnim;
+  };
+  const openHello = () => {
+    if (helloOpen) return;
+    helloOpen = true;
+    const { r0, R } = origin();
+    helloTime.textContent = `It’s ${fmt.format(new Date())} in Manila`;
+    animate(
+      sayHi,
+      { scale: [1, 0.92, 1] },
+      { duration: 0.32, ease: "easeOut" },
+    );
+    grow(r0, R, { duration: 0.85, ease: [0.22, 1, 0.36, 1] });
+    hello.inert = false;
+    hello.dataset.open = "true";
+    startHello();
+    for (const el of helloParts) el.style.opacity = 0;
+    animate(
+      helloParts,
+      { opacity: [0, 1], y: [22, 0] },
+      {
+        duration: 0.7,
+        ease: [0.16, 1, 0.3, 1],
+        delay: stagger(0.05, { startDelay: 0.22 }),
+      },
+    );
+    later(
+      () => hello.querySelector(".hello-x").focus({ preventScroll: true }),
+      300,
+    );
+  };
+  const closeHello = async () => {
+    if (!helloOpen) return;
+    helloOpen = false;
+    stopHello();
+    const { r0, R } = origin();
+    animate(helloParts, { opacity: 0, y: 8 }, { duration: 0.18 });
+    const anim = grow(helloR || R, r0, {
+      duration: 0.6,
+      ease: [0.55, 0, 0.45, 1],
+      delay: 0.06,
+    });
+    hello.inert = true;
+    sayHi.focus({ preventScroll: true });
+    await anim.finished;
+    if (alive && !helloOpen) hello.dataset.open = "false";
+  };
+  // ---- the contact screen is a multiplayer Figma file: you join, Alexi selects the
+  // headline, then parks by the comment thread and reacts while you write ----
+  const note = $('[data-role="hello-note"]');
+  const noteText = note.querySelector("textarea");
+  const sendBtn = note.querySelector('button[type="submit"]');
+  const hAlexi = hello.querySelector(".hello-alexi");
+  const hChat = hAlexi.querySelector(".chat");
+  const hYou = hello.querySelector(".hello-you");
+  const hJoined = hello.querySelector(".hello-joined");
+  const hSel = hello.querySelector(".hello-sel");
+  const hSelBox = hSel.querySelector("i");
+  const hHandles = [...hSel.querySelectorAll("b")];
+  const hChip = hSel.querySelector("em");
+  let hRun = 0; // bumps on open/close so a running sequence knows to stop
+  let hx = 0;
+  let hy = 0;
+  let typedOnce = false;
+  const hPlace = (x, y) => {
+    hAlexi.style.transform = `translate(${x}px, ${y}px)`;
+  };
+  const hMove = (tx, ty, duration = 0.7) => {
+    const fx = hx;
+    const fy = hy;
+    hx = tx;
+    hy = ty;
+    return animate(0, 1, {
+      duration,
+      ease: [0.45, 0, 0.2, 1],
+      onUpdate: (p) => hPlace(fx + (tx - fx) * p, fy + (ty - fy) * p),
+    }).finished;
+  };
+  const hSay = (text, ms) => {
+    hChat.textContent = text;
+    hChat.classList.add("on");
+    if (ms)
+      later(() => {
+        if (hChat.textContent === text) hChat.classList.remove("on");
+      }, ms);
+  };
+  const resetSel = () => {
+    hSelBox.style.clipPath = "inset(0 100% 100% 0)";
+    hSelBox.style.backgroundColor = "";
+    for (const b of hHandles) b.style.transform = "scale(0)";
+    hChip.style.opacity = 0;
+  };
+  // drag a marquee over "Say hi.", the same way the preloader selects the signature
+  const drawSel = async (run, withCursor) => {
+    const r = hSel.getBoundingClientRect();
+    const x0 = r.left;
+    const y0 = r.top + r.height * 0.08;
+    if (withCursor) {
+      await hMove(x0, y0, 0.6);
+      if (run !== hRun) return;
+    }
+    await animate(0, 1, {
+      duration: 0.75,
+      ease: [0.3, 0, 0.2, 1],
+      onUpdate: (p) => {
+        const left = 100 - 100 * p;
+        hSelBox.style.clipPath = `inset(0 ${left}% ${left}% 0)`;
+        if (withCursor) hPlace(x0 + r.width * p, y0 + r.height * 0.9 * p);
+      },
+    }).finished;
+    if (run !== hRun) return;
+    if (withCursor) {
+      hx = x0 + r.width;
+      hy = y0 + r.height * 0.9;
+    }
+    animate(
+      hSelBox,
+      { backgroundColor: "rgba(13, 153, 255, 0)" },
+      { duration: 0.4 },
+    );
+    animate(
+      hHandles,
+      { scale: [0, 1] },
+      { duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: stagger(0.05) },
+    );
+    animate(
+      hChip,
+      { opacity: [0, 1], y: [-4, 0] },
+      { duration: 0.35, delay: 0.15, ease: [0.22, 1, 0.36, 1] },
+    );
+  };
+  const startHello = () => {
+    const run = ++hRun;
+    typedOnce = false;
+    resetSel();
+    hChat.classList.remove("on");
+    animate(
+      hJoined,
+      { opacity: [0, 1], y: [-8, 0] },
+      { duration: 0.4, delay: 0.55, ease: [0.22, 1, 0.36, 1] },
+    );
+    later(() => {
+      if (run === hRun)
+        animate(hJoined, { opacity: 0, y: -6 }, { duration: 0.35 });
+    }, 3400);
+    if (!finePointer) {
+      later(() => run === hRun && drawSel(run, false), 650);
+      return;
+    }
+    // Alexi comes out of the button you pressed
+    const { x, y } = origin();
+    hx = x;
+    hy = y;
+    hPlace(x, y);
+    animate(hAlexi, { opacity: [0, 1] }, { duration: 0.3, delay: 0.35 });
+    later(async () => {
+      if (run !== hRun) return;
+      await drawSel(run, true);
+      if (run !== hRun) return;
+      await new Promise((r) => later(r, 450));
+      if (run !== hRun) return;
+      const t = note.getBoundingClientRect();
+      await hMove(t.right + 4, t.top + 14, 0.8);
+      if (run !== hRun) return;
+      hSay("reply right here, I’ll see it");
+    }, 600);
+  };
+  const stopHello = () => {
+    hRun++;
+    animate([hAlexi, hYou, hJoined], { opacity: 0 }, { duration: 0.15 });
+    hChat.classList.remove("on");
+  };
+  // your own name tag follows your pointer while you're in the file
+  if (finePointer)
+    on(hello, "pointermove", (e) => {
+      hYou.style.transform = `translate(${e.clientX + 12}px, ${e.clientY + 18}px)`;
+      if (helloOpen && hYou.style.opacity !== "1") hYou.style.opacity = 1;
+    });
+  on(
+    noteText,
+    "focus",
+    () => helloOpen && finePointer && hSay("ooh, tell me more"),
+  );
+  on(noteText, "input", () => {
+    sendBtn.disabled = !noteText.value.trim();
+    if (!finePointer) return;
+    const n = noteText.value.length;
+    if (n > 0 && !typedOnce) {
+      typedOnce = true;
+      hSay("I’m listening");
+    } else if (n > 140 && hChat.textContent !== "keep going, this is good")
+      hSay("keep going, this is good");
+  });
+  // Enter sends (Shift+Enter for a new line), like a Figma comment
+  on(noteText, "keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      note.requestSubmit();
+    }
+  });
+  on(note, "submit", (e) => {
+    e.preventDefault();
+    const body = noteText.value.trim();
+    if (!body) {
+      noteText.focus();
+      animate(
+        note,
+        { x: [0, -6, 6, -3, 0] },
+        { duration: 0.32, ease: "easeOut" },
+      );
+      return;
+    }
+    if (finePointer) hSay("off to your mail app", 2400);
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent("Hi from alexi.life")}&body=${encodeURIComponent(body)}`;
+  });
+  on(sayHi, "click", openHello);
+  on(hello.querySelector(".hello-x"), "click", closeHello);
+  on(helloMail, "click", () => {
+    navigator.clipboard?.writeText(email).catch(() => {});
+    toast();
+    const tag = helloMail.querySelector("em");
+    tag.textContent = "Copied ✓";
+    later(() => {
+      tag.textContent = "Copy";
+    }, 1600);
+  });
+  on(
+    window,
+    "keydown",
+    (e) => {
+      if (!helloOpen) return;
+      if (e.key === "Escape") closeHello();
+      e.stopImmediatePropagation();
+    },
+    { capture: true },
+  );
   const mail = $('[data-role="mail"]');
   on(mail, "click", (e) => {
     e.stopPropagation();
     copy(mail, email, "copied ✓")();
   });
-
-  // ---------------- hover selection: thin blue box + size chip, glides between neighbours ----------------
-  if (finePointer) {
-    const hs = $(".hsel");
-    const chip = hs.querySelector("span");
-    let shown = false;
-    let hideT;
-    const targets =
-      ".hero .pill, .hero .photo, .links a, .links .mail, header .hr a, header .hr button, header .me";
-    on(document, "pointerover", (e) => {
-      const el = e.target.closest?.(targets);
-      if (!el || !root.contains(el) || open >= 0) return;
-      cancel(hideT);
-      const r = el.getBoundingClientRect();
-      const p = 3;
-      chip.textContent = `${Math.round(r.width)} × ${Math.round(r.height)}`;
-      const box = {
-        x: r.left - p,
-        y: r.top - p,
-        width: r.width + 2 * p,
-        height: r.height + 2 * p,
-      };
-      if (!shown) {
-        set(hs, box);
-        animate(hs, { opacity: 1 }, { duration: 0.12 });
-        shown = true;
-      } else animate(hs, { ...box, opacity: 1 }, spring(520, 44));
-    });
-    on(document, "pointerout", (e) => {
-      if (!e.target.closest?.(targets)) return;
-      cancel(hideT);
-      hideT = later(() => {
-        shown = false;
-        animate(hs, { opacity: 0 }, { duration: 0.15 });
-      }, 90);
-    });
-  }
 
   // ---------------- cursor chat: press / and type, like Figma; Enter opens an email ----------------
   $(".you").inert = true;
@@ -663,47 +978,188 @@ export function mountHome(root, { folders, email, navigate }) {
     });
   }
 
-  // ---------------- Alexi's cursor wanders the hero (paused while a folder is open) ----------------
+  // ---------------- Alexi's cursor: wanders the hero, and guides you the first time ----------------
   if (!reduce && canHover) {
     const mp = $(".mp");
     const chat = mp.querySelector(".chat");
     let x = innerWidth * 0.72;
     let y = 260;
+    let travel = null;
+    let wake = null;
+    let stepT = null;
+    let stepping = false;
+    let noticedAt = 0;
+    const queue = [];
+    const seen = new Set(
+      (() => {
+        try {
+          return JSON.parse(sessionStorage.getItem("alx-hints") || "[]");
+        } catch {
+          return [];
+        }
+      })(),
+    );
     set(mp, { x, y });
+    const say = (text, ms = 2200) => {
+      chat.textContent = text;
+      chat.classList.add("on");
+      later(() => chat.classList.remove("on"), ms);
+    };
+    const visible = (el) => {
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return r.width && r.bottom > 40 && r.top < innerHeight - 10;
+    };
+    // a hint is shown once per visit; it jumps the queue and wakes the cursor up
+    hint = (key, target, line) => {
+      if (seen.has(key)) return;
+      seen.add(key);
+      try {
+        sessionStorage.setItem("alx-hints", JSON.stringify([...seen]));
+      } catch {}
+      queue.push({ target, line });
+      if (!stepping) {
+        cancel(stepT);
+        stepT = later(step, 350);
+      }
+    };
+    const travelTo = async (tx, ty) => {
+      travel = motionAnimate(
+        mp,
+        {
+          x: [x, (x + tx) / 2 + (Math.random() - 0.5) * 120, tx],
+          y: [y, (y + ty) / 2 + (Math.random() - 0.5) * 80, ty],
+        },
+        {
+          duration: Math.min(1.5, 0.55 + Math.hypot(tx - x, ty - y) / 1100),
+          ease: [0.45, 0, 0.25, 1],
+        },
+      );
+      // a hello can interrupt the trip; don't rely on a stopped animation's promise
+      await Promise.race([
+        travel.finished,
+        new Promise((resolve) => {
+          wake = resolve;
+        }),
+      ]);
+      wake = null;
+      if (performance.now() - noticedAt < 3000) return false;
+      x = tx;
+      y = ty;
+      return true;
+    };
+    // bump into Alexi's cursor and it turns to you, says hi, and steps aside
+    on(window, "pointermove", (e) => {
+      if (open >= 0 || performance.now() - noticedAt < 7000) return;
+      const r = mp.getBoundingClientRect();
+      const dx = r.left - e.clientX;
+      const dy = r.top - e.clientY;
+      const d = Math.hypot(dx, dy);
+      if (d > 70 || d < 1) return;
+      noticedAt = performance.now();
+      travel?.stop();
+      wake?.();
+      x = r.left + (dx / d) * 46;
+      y = r.top + (dy / d) * 30;
+      travel = animate(mp, { x, y }, spring(260, 24));
+      animate(
+        mp,
+        { rotate: [0, -14, 0] },
+        { duration: 0.45, ease: "easeInOut" },
+      );
+      say(
+        ["oh hi", "hey!", "you found me", "hi :)"][
+          Math.floor(Math.random() * 4)
+        ],
+      );
+    });
     const step = async () => {
-      const els = [...root.querySelectorAll("[data-cur]")].filter((el) => {
+      stepT = null;
+      stepping = true;
+      await guideOrWander();
+      stepping = false;
+    };
+    const guideOrWander = async () => {
+      // guide first: point at the thing and say what it does
+      while (queue.length) {
+        const { target, line } = queue.shift();
+        const el = target();
+        if (!visible(el)) continue;
         const r = el.getBoundingClientRect();
-        return r.width && r.bottom > 60 && r.top < innerHeight - 20;
-      });
-      if (els.length && open < 0) {
-        const el = els[Math.floor(Math.random() * els.length)];
-        const r = el.getBoundingClientRect();
-        const tx = r.left + r.width * (0.35 + Math.random() * 0.3);
-        const ty = r.top + r.height * 0.6;
-        await motionAnimate(
-          mp,
-          {
-            x: [x, (x + tx) / 2 + (Math.random() - 0.5) * 120, tx],
-            y: [y, (y + ty) / 2 + (Math.random() - 0.5) * 80, ty],
-          },
-          {
-            duration: Math.min(1.6, 0.6 + Math.hypot(tx - x, ty - y) / 1000),
-            ease: [0.45, 0, 0.25, 1],
-          },
-        ).finished;
+        const arrived = await travelTo(
+          r.left + Math.min(r.width * 0.6, 60),
+          r.top + r.height * 0.55,
+        );
         if (!alive) return;
-        x = tx;
-        y = ty;
-        if (el.dataset.cur && Math.random() < 0.55) {
-          chat.textContent = el.dataset.cur;
-          chat.classList.add("on");
-          later(() => chat.classList.remove("on"), 2500);
+        if (arrived) say(line, 2800);
+        stepT = later(step, 3000);
+        return;
+      }
+      if (open < 0) {
+        const els = [...root.querySelectorAll("[data-cur]")].filter(visible);
+        if (els.length) {
+          const el = els[Math.floor(Math.random() * els.length)];
+          const r = el.getBoundingClientRect();
+          const arrived = await travelTo(
+            r.left + r.width * (0.35 + Math.random() * 0.3),
+            r.top + r.height * 0.6,
+          );
+          if (!alive) return;
+          if (arrived && el.dataset.cur && Math.random() < 0.55)
+            say(el.dataset.cur, 2500);
         }
       }
-      later(step, 2600 + Math.random() * 1800);
+      stepT = later(step, 2600 + Math.random() * 1800);
     };
-    later(step, 1200);
+    // the first-visit tour, once the page has settled
+    const tour = () => {
+      hint("tabs", () => tabs[1], "open a folder");
+      hint(
+        "casper",
+        () => root.querySelector(".hero .pill"),
+        "where I’m building now",
+      );
+      if (finePointer)
+        hint("chat", () => root.querySelector(".links .kb"), "or just say hi");
+    };
+    // First load: pick up exactly where the preloader's cursor stands, so it reads as
+    // the same cursor, and only start wandering once the page has assembled.
+    const begin = () => {
+      const handoff = window.__alxCursorHandoff;
+      window.__alxCursorHandoff = undefined;
+      if (handoff) {
+        x = handoff.x;
+        y = handoff.y;
+        set(mp, { x, y });
+      }
+      later(tour, 1800);
+      stepT = later(step, 2400);
+    };
+    if (intro) on(window, PRELOADER_READY_EVENT, begin, { once: true });
+    else begin();
   }
+
+  // double-click the canvas: drop a comment pin from Alexi that floats away
+  on(root, "dblclick", (e) => {
+    if (open >= 0 || e.target.closest("button, a, input, .unit, header"))
+      return;
+    window.getSelection()?.removeAllRanges();
+    const pin = document.createElement("span");
+    pin.className = "stamp";
+    pin.innerHTML = '<img src="/avatar.webp" alt=""><em>hi from Manila</em>';
+    pin.style.left = `${e.clientX}px`;
+    pin.style.top = `${e.clientY}px`;
+    root.appendChild(pin);
+    animate(pin, { scale: [0, 1], opacity: [0, 1] }, spring(420, 26));
+    later(async () => {
+      await animate(
+        pin,
+        { y: -28, opacity: 0 },
+        { duration: 0.5, ease: "easeIn" },
+      ).finished;
+      pin.remove();
+    }, 1700);
+  });
 
   // decode folder images while idle so the first open never stutters
   const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
