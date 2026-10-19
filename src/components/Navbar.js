@@ -114,6 +114,9 @@ export default function PortfolioNavbar() {
   const navPillClass =
     "tap-scale relative flex h-9 items-center px-3 text-sm text-[var(--portfolio-ink-muted)] transition-[color,scale] duration-150 ease-out hover:text-[var(--portfolio-ink)]";
 
+  // Home is one screen with its own header.
+  if (pathname === "/") return null;
+
   return (
     <Navbar className="fixed top-4">
       <NavBody className="max-w-[940px]">

@@ -104,7 +104,7 @@ function AtmosphereBand({ index, total }) {
 export default function PageAtmosphere() {
   const pathname = usePathname();
   const home = pathname === "/";
-  const enabled = !pathname?.startsWith("/admin");
+  const enabled = !pathname?.startsWith("/admin") && !home;
   const hostRef = useRef(null);
   const [bands, setBands] = useState(3);
   useEffect(() => {

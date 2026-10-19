@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { socials } from "../config/socials";
 
 const links = [
@@ -20,7 +21,11 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // Home is one screen; it doesn't scroll to a footer.
+  if (pathname === "/") return null;
 
   return (
     <footer className="relative z-10 mx-auto mt-24 w-full max-w-6xl px-5 pb-10 pt-12 sm:px-8 lg:px-10">
