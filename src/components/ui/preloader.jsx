@@ -24,8 +24,13 @@ const FIREFLIES = [
   [38, "45.97%", "64.51%", "45.92%", "62.38%", "163 240 74", "195 245 113"],
 ];
 
+// Waits for the pictures on screen to be ready to paint. A lazy image that hasn't started
+// loading (say, inside a closed folder, clipped out of view) would never resolve decode(), and
+// the page would sit on the preloader forever: skip those, and never wait more than 3s.
 async function decodeVisibleImages() {
   const images = Array.from(document.images).filter((image) => {
+    if (image.loading === "lazy" && !image.complete && !image.currentSrc)
+      return false;
     const bounds = image.getBoundingClientRect();
     return (
       bounds.width > 0 &&
@@ -36,7 +41,10 @@ async function decodeVisibleImages() {
       bounds.right > 0
     );
   });
-  await Promise.allSettled(images.map((image) => image.decode()));
+  await Promise.race([
+    Promise.allSettled(images.map((image) => image.decode())),
+    new Promise((resolve) => setTimeout(resolve, 3000)),
+  ]);
 }
 
 // Home: Alexi's multiplayer cursor holds the pen. It reads the stroke's progress every
