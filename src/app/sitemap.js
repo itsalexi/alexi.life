@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
+import { WORK } from "@/lib/home-folders";
 import { siteConfig } from "@/lib/seo";
 
 function fileModifiedAt(relativePath) {
@@ -29,7 +30,7 @@ function contentPages(contentDir, routePrefix, priority) {
       const { data } = matter(
         fs.readFileSync(path.join(directory, file), "utf8"),
       );
-      return !data.draft;
+      return !data.draft && !data.hidden;
     })
     .map((file) => {
       const slug = file.replace(".md", "");
@@ -43,15 +44,14 @@ function contentPages(contentDir, routePrefix, priority) {
     });
 }
 
+// /projects, /blog, /talks, /hackathons and /work only redirect into a home folder now, so
+// they're left out; every page inside them is listed.
 export default function sitemap() {
   return [
     staticPage("/", "src/app/page.js", 1, "weekly"),
-    staticPage("/about", "src/app/about/page.js", 0.8),
-    staticPage("/projects", "src/app/projects/page.js", 0.9, "weekly"),
-    staticPage("/blog", "src/app/blog/page.js", 0.8, "weekly"),
-    staticPage("/talks", "src/app/talks/page.js", 0.7),
-    staticPage("/hackathons", "src/app/hackathons/page.js", 0.7),
+    staticPage("/about", "src/components/about/content.js", 0.8),
     staticPage("/contact", "src/app/contact/page.js", 0.6),
+    ...WORK.map((w) => staticPage(w.href, "src/lib/home-folders.js", 0.75)),
     ...contentPages("src/content/projects", "/projects", 0.75),
     ...contentPages("src/content/blogs", "/blog", 0.65),
     ...contentPages("src/content/talks", "/talks", 0.6),

@@ -21,7 +21,7 @@ const quip = (h) =>
   h < 5
     ? "should be asleep"
     : h < 9
-      ? "on matcha #1"
+      ? "waking up"
       : h < 12
         ? "deep in the code"
         : h < 14
@@ -46,7 +46,7 @@ export default function SiteHeader() {
     <header>
       <Link href="/" className="me" aria-label="Alexi Canamo, home">
         <span className="av">
-          <Image src="/avatar.webp" alt="" width={68} height={68} />
+          <Image src="/avatar.webp" alt="" width={68} height={68} priority />
         </span>
         <span className="who">
           <b>Alexi Canamo</b>
@@ -65,6 +65,7 @@ export default function SiteHeader() {
       </Link>
       <div className="hr">
         <ThemeToggle />
+        <Link href="/about">About</Link>
         <a href={socials.resume} target="_blank" rel="noreferrer">
           Résumé
         </a>

@@ -5,5 +5,7 @@ const CANVAS_DETAIL = /^\/(projects|hackathons|blog|talks|work)\/[^/]+\/?$/;
 
 export function isCanvasPage(pathname) {
   if (!pathname) return false;
-  return pathname === "/" || CANVAS_DETAIL.test(pathname);
+  return (
+    pathname === "/" || pathname === "/about" || CANVAS_DETAIL.test(pathname)
+  );
 }

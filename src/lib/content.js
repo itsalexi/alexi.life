@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { loadAllHackathons } from "./hackathons";
 import { buildHomeFolders } from "./home-folders";
 import { imageSize } from "./image-size";
+import { calculateReadingTime } from "./reading-time";
 
 export function loadFrontmatter(folder) {
   const directory = path.join(process.cwd(), "src/content", folder);
@@ -12,10 +13,14 @@ export function loadFrontmatter(folder) {
     .readdirSync(directory)
     .filter((file) => file.endsWith(".md"))
     .map((file) => {
-      const { data } = matter(
+      const { data, content } = matter(
         fs.readFileSync(path.join(directory, file), "utf8"),
       );
-      return { slug: file.replace(".md", ""), ...data };
+      return {
+        slug: file.replace(".md", ""),
+        readTime: calculateReadingTime(content),
+        ...data,
+      };
     });
 }
 

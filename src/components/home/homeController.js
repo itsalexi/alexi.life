@@ -325,23 +325,30 @@ export function mountHome(root, { folders, email, navigate }) {
     sc: null,
   }));
 
-  // every order of 0..n-1 that's at most two swaps from the original (files mostly keep their place)
+  // every order of 0..n-1 that's at most two swaps of neighbours from the original (files mostly
+  // keep their place). Built straight from those swaps: listing every order and filtering is
+  // n! of them, which froze the page once a folder had ten files.
   const orders = (n) => {
-    const out = [];
-    const walk = (left, acc) => {
-      if (!left.length) return out.push(acc);
-      for (const k of left) walk(left.filter((j) => j !== k), [...acc, k]);
-    };
-    walk([...Array(n).keys()], []);
-    return out
-      .map((o) => ({
-        o,
-        swaps: o.reduce(
-          (t, a, i) => t + o.slice(i + 1).filter((b) => b < a).length,
-          0,
-        ),
-      }))
-      .filter((x) => x.swaps <= 2);
+    const seen = new Map();
+    let level = [[...Array(n).keys()]];
+    // big folders already try 2^(n-1) ways to break rows; keep their order as is
+    const most = n > 11 ? 0 : 2;
+    for (let swaps = 0; swaps <= most; swaps++) {
+      const next = [];
+      for (const o of level) {
+        const key = o.join();
+        if (seen.has(key)) continue;
+        seen.set(key, { o, swaps });
+        if (swaps === most) continue;
+        for (let k = 0; k < n - 1; k++) {
+          const p = o.slice();
+          [p[k], p[k + 1]] = [p[k + 1], p[k]];
+          next.push(p);
+        }
+      }
+      level = next;
+    }
+    return [...seen.values()];
   };
 
   // Frames keep their pictures' own shapes and sit in justified rows: every row spans the
@@ -433,21 +440,53 @@ export function mountHome(root, { folders, email, navigate }) {
       }
       y += h + L + GV;
     });
-    if (c.at >= 0) camTo(i, c.at, true);
-    else panTo(i, c.pan, true);
+    if (c.at >= 0) {
+      camTo(i, c.at, true);
+      placeCap(c);
+    } else panTo(i, c.pan, true);
   }
 
   // scrolling a canvas that runs past the window: the wheel (or a trackpad) moves the page of
   // frames; soft fades at the edges say there's more that way
+  // Wheel and trackpad move one target (c.pan); the page of frames follows it on a critically
+  // damped spring (~80ms behind, speed never jumps). A mouse's notches glide into one motion, a
+  // trackpad's own momentum stays smooth, and it never switches between snapping and tweening.
   function panTo(i, y, instant) {
     const c = cv[i];
     c.pan = Math.min(0, Math.max(-(c.maxPan || 0), y));
     c.el.classList.toggle("more-below", c.pan > -(c.maxPan || 0) + 2);
     c.el.classList.toggle("more-above", c.pan < -2);
     c.cam?.stop();
-    if (instant) set(c.world, { y: c.pan });
-    else
-      c.cam = animate(c.world, { y: c.pan }, { duration: 0.22, ease: "easeOut" });
+    if (instant || reduce) {
+      cancelAnimationFrame(c.glide);
+      c.glide = 0;
+      c.shown = c.pan;
+      c.vel = 0;
+      set(c.world, { y: c.pan });
+      return;
+    }
+    if (c.glide) return;
+    const W0 = 26; // spring frequency (rad/s)
+    let last = performance.now();
+    const step = (now) => {
+      let dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      while (dt > 0) {
+        const h = Math.min(dt, 1 / 240);
+        c.vel += (W0 * W0 * (c.pan - c.shown) - 2 * W0 * c.vel) * h;
+        c.shown += c.vel * h;
+        dt -= h;
+      }
+      if (Math.abs(c.pan - c.shown) < 0.3 && Math.abs(c.vel) < 8) {
+        c.shown = c.pan;
+        c.vel = 0;
+      }
+      set(c.world, { y: c.shown });
+      c.glide = c.shown === c.pan ? 0 : requestAnimationFrame(step);
+    };
+    c.shown ??= c.pan;
+    c.vel ??= 0;
+    c.glide = requestAnimationFrame(step);
   }
 
   const setZ = (c, z) => {
@@ -466,17 +505,38 @@ export function mountHome(root, { folders, email, navigate }) {
     if (k >= 0 && c.rects[k]) {
       const r = c.rects[k];
       const narrow = W < 760;
-      const aw = narrow ? W * 0.88 : W * 0.54;
-      const ah = narrow ? H * 0.5 : H * 0.74;
-      const ax = narrow ? W * 0.06 : W * 0.05;
-      const ay = narrow ? H * 0.08 : (H - ah) / 2;
-      z = Math.min(aw / r.w, ah / r.h);
-      x = ax + (aw - r.w * z) / 2 - r.x * z;
-      y = ay + (ah - r.h * z) / 2 - r.y * z;
+      if (narrow) {
+        // the frame up top, the words under it (placed by CSS)
+        const aw = W * 0.88;
+        const ah = H * 0.48;
+        z = Math.min(aw / r.w, ah / r.h);
+        x = (W - r.w * z) / 2 - r.x * z;
+        y = H * 0.05 + (ah - r.h * z) / 2 - r.y * z;
+        c.capBox = null;
+      } else {
+        // the frame and its words are one group, centered: [frame] gap [words]
+        const capW = Math.min(400, Math.max(290, W * 0.3));
+        const gap = Math.min(64, Math.max(40, W * 0.045));
+        const aw = W * 0.9 - gap - capW;
+        const ah = H * 0.72;
+        z = Math.min(aw / r.w, ah / r.h);
+        const fw = r.w * z;
+        const fh = r.h * z;
+        const gx = (W - (fw + gap + capW)) / 2;
+        const fy = (H - fh) / 2 + 12;
+        x = gx - r.x * z;
+        y = fy - r.y * z;
+        // the words start on the frame's name row
+        c.capBox = { left: gx + fw + gap, top: fy - 30, width: capW, H };
+      }
     }
     c.cam?.stop();
     c.sc?.stop();
     c.zc?.stop();
+    cancelAnimationFrame(c.glide);
+    c.glide = 0;
+    c.shown = y;
+    c.vel = 0;
     if (instant) {
       set(c.world, { x, y, scale: z });
       setZ(c, z);
@@ -488,10 +548,60 @@ export function mountHome(root, { folders, email, navigate }) {
     c.zc = animate(c.z, z, { ...fine, onUpdate: (v) => setZ(c, v) });
   }
 
-  const capHTML = (folder, item, k) =>
-    `<div class="meta"><span class="l">${item.res ? `<span class="res">${esc(item.res)}</span>` : ""}<span>${esc(item.meta)}</span></span><span class="when">${esc(item.when)}</span></div>
-    <p class="two"><b>${esc(item.title)}.</b> ${esc(item.line)}</p><a class="view" href="${esc(item.href)}">${esc(folder.view)} ›</a>
-    <div class="hint"><kbd>←</kbd><kbd>→</kbd> ${k + 1} of ${folder.items.length} &nbsp;·&nbsp; <kbd>esc</kbd> zoom out</div>`;
+  // put the words where camTo said, nudged up if they'd run off the bottom
+  const placeCap = (c) => {
+    const b = c.capBox;
+    if (!b) {
+      Object.assign(c.cap.style, { left: "", top: "", width: "" });
+      return;
+    }
+    c.cap.style.width = `${b.width}px`;
+    c.cap.style.left = `${b.left}px`;
+    const h = c.cap.offsetHeight;
+    c.cap.style.top = `${Math.max(18, Math.min(b.top, b.H - h - 18))}px`;
+  };
+
+  // Zoomed in, the file's details sit straight on the canvas beside the frame, no box: a mono
+  // label, the big two-tone line (like the hero), what happened in a few short points, its facts
+  // in one line, more shots as little prints, and the way out. Alexi's comment stays on the
+  // frame itself as its pin, opened.
+  // the file's facts as one quiet line: stack, event, read time; "Live" gets a green dot
+  const spec = (item) =>
+    (item.facts || [])
+      .flatMap(([key, v]) => {
+        if (key === "Status")
+          return v === "Live"
+            ? [`<span class="live"><i aria-hidden="true"></i>Live</span>`]
+            : [];
+        if (key === "Read") return [`${esc(v)} read`];
+        return [esc(v)];
+      })
+      .join(`<b aria-hidden="true">·</b>`);
+  const capHTML = (folder, item, k) => {
+    const n = folder.items.length;
+    const pad2 = (x) => String(x).padStart(2, "0");
+    const out = item.ext
+      ? `<a class="ext" href="${esc(item.ext.href)}" target="_blank" rel="noreferrer">${esc(item.ext.label)} <span aria-hidden="true">↗</span></a>`
+      : item.related
+        ? `<a class="view ext" href="${esc(item.related.href)}">${esc(item.related.label)} <span aria-hidden="true">→</span></a>`
+        : "";
+    const facts = spec(item);
+    return [
+      // the frame's own name row already shows the result (or the date), so the label doesn't
+      `<p class="lbl">${[`${pad2(k + 1)} / ${pad2(n)}`, item.res ? item.when : item.meta].map(esc).join(" · ")}</p>`,
+      `<p class="two"><b>${esc(item.title)}.</b> ${esc(item.line)}</p>`,
+      item.points?.length
+        ? `<ul class="pts">${item.points.map((pt) => `<li>${esc(pt)}</li>`).join("")}</ul>`
+        : "",
+      facts ? `<p class="spec">${facts}</p>` : "",
+      item.shots?.length
+        ? `<a class="view shots" href="${esc(item.href)}" aria-label="More photos">${item.shots.map((src) => `<img src="${esc(src)}" alt="" loading="lazy">`).join("")}</a>`
+        : "",
+      `<div class="acts"><a class="view go" href="${esc(item.href)}">${esc(folder.view)} <span aria-hidden="true">→</span></a>${out}</div>`,
+      `<div class="hint"><button type="button" class="prev" aria-label="Previous file">←</button><button type="button" class="next" aria-label="Next file">→</button><span>to flip</span><button type="button" class="cx">esc</button><span>to zoom out</span></div>`,
+    ].join("");
+  };
+  const capParts = (c) => [...c.cap.children];
 
   function zoomTo(i, k) {
     const c = cv[i];
@@ -504,23 +614,45 @@ export function mountHome(root, { folders, email, navigate }) {
     c.frames.forEach((fr, j) => {
       fr.classList.toggle("on", j === k);
     });
-    camTo(i, k);
-    // words: out quickly, swap, back in once the camera is nearly there
-    animate(
-      c.cap,
-      { opacity: 0, x: k >= 0 && !first ? -8 : 0 },
-      { duration: 0.12 },
-    ).finished.then(() => {
-      if (!alive || c.at !== k) return;
-      c.cap.classList.toggle("on", k >= 0);
-      if (k < 0) return;
+    if (k >= 0 && first)
       c.cap.innerHTML = capHTML(c.folder, c.folder.items[k], k);
+    camTo(i, k);
+    if (k >= 0 && first) placeCap(c);
+    const settle = { duration: 0.5, ease: [0.2, 0.75, 0.2, 1] };
+    if (k < 0) {
+      c.cap.classList.remove("on");
+      animate(c.cap, { opacity: 0 }, { duration: 0.18, ease: "easeIn" });
+    } else if (first) {
+      // the words land a beat after the camera starts moving, one after another
+      c.cap.classList.add("on");
+      c.cap.style.opacity = 1;
       animate(
-        c.cap,
-        { opacity: [0, 1], x: [14, 0] },
-        { duration: 0.4, delay: first ? 0.16 : 0.06, ease: [0.2, 0.7, 0.2, 1] },
+        capParts(c),
+        { opacity: [0, 1], y: [14, 0] },
+        { ...settle, delay: stagger(0.05, { startDelay: 0.14 }) },
       );
-    });
+    } else {
+      // flipping: out quick, swap, back in
+      animate(
+        capParts(c),
+        { opacity: 0, y: -6 },
+        { duration: 0.12 },
+      ).finished.then(() => {
+        if (!alive || c.at !== k) return;
+        const focused = document.activeElement;
+        const which = c.cap.contains(focused) ? focused.className : null;
+        c.cap.innerHTML = capHTML(c.folder, c.folder.items[k], k);
+        placeCap(c);
+        if (which) c.cap.querySelector(`.${which.split(" ")[0]}`)?.focus();
+        animate(
+          capParts(c),
+          { opacity: [0, 1], y: [10, 0] },
+          { ...settle, duration: 0.4, delay: stagger(0.035) },
+        );
+      });
+    }
+    if (k >= 0 && c.folder.items[k].ext?.href?.startsWith("http"))
+      hint("live", () => c.cap.querySelector(".ext"), "try it, it’s live");
     // pins land the first time you see their frame up close
     const pin = k >= 0 && c.frames[k].querySelector(".pin");
     if (pin && !pin.dataset.seen) {
@@ -562,6 +694,10 @@ export function mountHome(root, { folders, email, navigate }) {
         navigate(view.getAttribute("href"));
         return;
       }
+      const n = c.frames.length;
+      if (e.target.closest(".cap .prev")) return zoomTo(i, (c.at + n - 1) % n);
+      if (e.target.closest(".cap .next")) return zoomTo(i, (c.at + 1) % n);
+      if (e.target.closest(".cap .cx")) return zoomTo(i, -1);
       if (e.target.closest(".cap.on") || e.target.closest(".pin")) return;
       if (e.target.closest(".zoom")) return zoomTo(i, -1);
       const fr = e.target.closest(".frame");
@@ -571,12 +707,14 @@ export function mountHome(root, { folders, email, navigate }) {
 
   // ---------------- wire up ----------------
   // First load: the page assembles as the preloader clears (hero rises in, folders slide up
-  // into the drawer). Coming back to / later, everything is simply already there.
+  // into the drawer). Back from About, a quicker version of the same (the header stays put).
+  // Coming back to / any other way, everything is simply already there.
   const intro =
     !reduce && document.documentElement.dataset.preloaderReady !== "true";
+  const back = !reduce && !intro && root.classList.contains("entering");
   layoutTabs();
   units.forEach((u, i) => {
-    set(u, { y: intro ? col.offsetHeight + 40 : baseY() });
+    set(u, { y: intro || back ? col.offsetHeight + 40 : baseY() });
     showInsides(i, false);
   });
   zs();
@@ -585,22 +723,34 @@ export function mountHome(root, { folders, email, navigate }) {
     resetCanvas(i);
   });
 
-  const runIntro = () => {
+  const runIntro = (quick = false) => {
     busy = true;
-    const parts = [$("header"), ...root.querySelectorAll(".hero > *")];
+    const parts = [
+      ...(quick ? [] : [$("header")]),
+      ...root.querySelectorAll(".hero > *"),
+    ];
+    const d0 = quick ? 0.04 : 0.3;
     parts.forEach((el, k) => {
       animate(
         el,
         { opacity: [0, 1], y: [16, 0], filter: ["blur(6px)", "blur(0px)"] },
-        { duration: 0.85, ease: [0.16, 1, 0.3, 1], delay: 0.3 + k * 0.07 },
+        {
+          duration: quick ? 0.7 : 0.85,
+          ease: [0.16, 1, 0.3, 1],
+          delay: d0 + k * 0.06,
+        },
       );
     });
+    // hand the hiding over to the animations before dropping the class, or the hero shows
+    // for a frame in between
+    for (const el of parts) el.style.opacity = "0";
+    root.classList.remove("entering");
     $(".drawer").style.opacity = 1;
     const lands = units.map((u, i) =>
       animate(
         u,
         { y: baseY() },
-        { ...spring(170, 25), delay: 0.52 + i * 0.06 },
+        { ...spring(170, 25), delay: (quick ? 0.16 : 0.52) + i * 0.06 },
       ),
     );
     Promise.all(lands.map((a) => a.finished)).then(() => {
@@ -608,9 +758,60 @@ export function mountHome(root, { folders, email, navigate }) {
       for (const el of parts) el.style.filter = "";
       busy = false;
       flush();
+      landPin();
     });
   };
-  if (intro) on(window, PRELOADER_READY_EVENT, runIntro, { once: true });
+  // Alexi's comment pin on the headline photo: lands, opens for a beat, folds back to the avatar
+  const hpin = $(".hpin");
+  function landPin() {
+    if (!hpin || hpin.classList.contains("in")) return;
+    hpin.classList.add("in");
+    later(() => hpin.classList.add("open"), 450);
+    later(() => hpin.classList.remove("open"), 3800);
+  }
+  on(hpin, "click", () => hpin.classList.toggle("open"));
+  if (intro)
+    on(window, PRELOADER_READY_EVENT, () => runIntro(), { once: true });
+  else if (back) runIntro(true);
+  else {
+    root.classList.remove("entering");
+    later(landPin, 700);
+  }
+
+  // Off to About: the hero lifts away and the folders drop into the drawer, the header stays,
+  // and About starts building where the hero was.
+  let leaving = false;
+  on(
+    root,
+    "click",
+    (e) => {
+      const a = e.target.closest('a[href="/about"]');
+      if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+        return;
+      e.preventDefault();
+      if (leaving) return;
+      leaving = true;
+      if (reduce) return navigate("/about");
+      busy = true;
+      const parts = [...root.querySelectorAll(".hero > *, .mp")];
+      parts.forEach((el, k) => {
+        animate(
+          el,
+          { opacity: 0, y: -12, filter: "blur(6px)" },
+          { duration: 0.3, ease: [0.5, 0, 0.75, 0], delay: k * 0.025 },
+        );
+      });
+      units.forEach((u, i) => {
+        animate(
+          u,
+          { y: col.offsetHeight + 40 },
+          { duration: 0.34, ease: [0.5, 0, 0.75, 0], delay: i * 0.03 },
+        );
+      });
+      later(() => navigate("/about"), 300);
+    },
+    { capture: true },
+  );
 
   tabs.forEach((t, i) => {
     on(t, "click", () => onTab(i));
@@ -694,7 +895,7 @@ export function mountHome(root, { folders, email, navigate }) {
     h < 5
       ? "should be asleep"
       : h < 9
-        ? "on matcha #1"
+        ? "waking up"
         : h < 12
           ? "deep in the code"
           : h < 14
@@ -1218,7 +1419,11 @@ export function mountHome(root, { folders, email, navigate }) {
         "where I’m building now",
       );
       if (finePointer)
-        hint("chat", () => root.querySelector(".links .kb"), "or just say hi");
+        hint(
+          "chat",
+          () => (open < 0 ? root.querySelector(".links .kb") : null),
+          "or just say hi",
+        );
     };
     // First load: pick up exactly where the preloader's cursor stands, so it reads as
     // the same cursor, and only start wandering once the page has assembled.

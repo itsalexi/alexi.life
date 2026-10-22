@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { socials } from "../../config/socials";
+import { softEnter } from "../../lib/canvas-nav";
 import { beginSceneLoad } from "../../lib/sceneReadiness";
 import ThemeToggle from "../frame/ThemeToggle";
 import { mountHome } from "./homeController";
@@ -265,6 +266,8 @@ function Folder({ folder }) {
 export default function HomeScreen({ folders }) {
   const rootRef = useRef(null);
   const router = useRouter();
+  // back from About: the hero and folders start hidden and rise in (see mountHome)
+  const [entering] = useState(softEnter);
 
   // The preloader waits for the home "scene"; this page has no 3D, so it's ready once mounted.
   useEffect(() => {
@@ -282,11 +285,11 @@ export default function HomeScreen({ folders }) {
   );
 
   return (
-    <div className="alx" ref={rootRef}>
+    <div className={`alx${entering ? " entering" : ""}`} ref={rootRef}>
       <header>
         <div className="me">
           <span className="av">
-            <Image src="/avatar.webp" alt="" width={68} height={68} />
+            <Image src="/avatar.webp" alt="" width={68} height={68} priority />
             <span className="av-chat">that’s me</span>
           </span>
           <span className="who">
@@ -298,6 +301,7 @@ export default function HomeScreen({ folders }) {
         </div>
         <div className="hr">
           <ThemeToggle />
+          <Link href="/about">About</Link>
           <a href={socials.resume} target="_blank" rel="noreferrer">
             Résumé
           </a>
@@ -315,12 +319,19 @@ export default function HomeScreen({ folders }) {
       <section className="hero">
         <h1>
           I{" "}
-          <span
-            className="photo"
-            role="img"
-            aria-label="Alexi, drinking matcha"
-            data-cur="that's me, matcha in hand"
-          />{" "}
+          <span className="ph">
+            <span
+              className="photo"
+              role="img"
+              aria-label="Alexi"
+              data-cur="that's me"
+            />
+            {/* a comment pin from Alexi on his own photo */}
+            <span className="hpin">
+              <Image src="/avatar.webp" alt="" width={52} height={52} />
+              <em>PH100 2026 · DOST scholar</em>
+            </span>
+          </span>{" "}
           build <br className="br-sm" />
           things people{" "}
           <span className="sel" data-cur="">
@@ -346,6 +357,9 @@ export default function HomeScreen({ folders }) {
           <a href={socials.linkedin} target="_blank" rel="noreferrer">
             LinkedIn
           </a>
+          <Link className="only-sm" href="/about">
+            About
+          </Link>
           <a
             className="only-sm"
             href={socials.resume}

@@ -87,9 +87,7 @@ html[data-theme="dark"] .fp-zoom {
 .alx .row {
   text-decoration: none;
 }
-.alx .cap .view {
-  color: #0066cc;
-}
+
 .alx .frame:focus-visible {
   outline: none;
 }
@@ -282,6 +280,61 @@ html[data-theme="dark"] .fp-zoom {
 }
 .alx .photo:hover {
   transform: rotate(3deg) scale(1.9);
+}
+/* the headline photo carries a comment pin, Figma style: it lands once the intro is done,
+   opens for a moment, then waits for a hover */
+.alx .ph {
+  position: relative;
+  display: inline-block;
+}
+.alx .hpin {
+  position: absolute;
+  left: calc(100% - 0.1em);
+  bottom: calc(100% - 0.22em);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 3px;
+  border-radius: 16px 16px 16px 3px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.12),
+    0 6px 16px -6px rgba(0, 0, 0, 0.35);
+  font:
+    500 13px / 1 -apple-system,
+    system-ui,
+    sans-serif;
+  letter-spacing: 0;
+  text-align: left;
+  transform-origin: 0 100%;
+  scale: 0;
+  transition: scale 0.5s cubic-bezier(0.34, 1.5, 0.5, 1);
+  cursor: default;
+}
+.alx .hpin.in {
+  scale: 1;
+}
+.alx .hpin img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex: none;
+}
+.alx .hpin em {
+  font-style: normal;
+  color: var(--ink);
+  white-space: nowrap;
+  max-width: 0;
+  overflow: hidden;
+  transition:
+    max-width 0.4s var(--lift),
+    padding 0.4s var(--lift);
+}
+.alx .hpin:hover em,
+.alx .hpin.open em {
+  max-width: 220px;
+  padding: 0 10px 0 8px;
 }
 .alx .sel {
   position: relative;
@@ -1028,11 +1081,12 @@ html[data-theme="dark"] .fp-zoom {
 .alx .frame .pin {
   transition: opacity 0.35s;
 }
+/* zoomed in, the selection is isolated: everything else steps away */
 .alx .zoomed .frame:not(.on) :is(.fb, .alx .fn, .alx .pin) {
-  opacity: 0.14;
+  opacity: 0;
 }
-.alx .zoomed .frame:not(.on):hover :is(.fb, .alx .fn) {
-  opacity: 0.5;
+.alx .zoomed .frame:not(.on) {
+  pointer-events: none;
 }
 /* comment pin: Figma's teardrop with your avatar; hover to read */
 .alx .pin {
@@ -1092,55 +1146,243 @@ html[data-theme="dark"] .fp-zoom {
   }
 }
 /* the words next to a zoomed frame */
+/* zoomed in: the file's details, straight on the canvas beside it (no box), set like the hero */
 .alx .cap {
   position: absolute;
-  right: 3%;
-  top: 50%;
-  width: 33%;
-  translate: 0 -50%;
+  left: 60%;
+  top: 18%;
+  width: 34%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   opacity: 0;
   pointer-events: none;
   z-index: 2;
-  background: var(--surface);
-  border-radius: 16px;
-  padding: 24px 26px 22px;
-  box-shadow:
-    0 0 0 0.5px rgba(0, 0, 0, 0.08),
-    0 18px 40px -22px rgba(0, 0, 0, 0.35);
-}
-.alx .cap .meta {
-  font-size: 13.5px;
-  color: var(--gray);
-}
-.alx .cap .two {
-  color: var(--gray);
 }
 .alx .cap.on {
   pointer-events: auto;
 }
-.alx .cap .two {
-  font-size: clamp(19px, 1.65vw, 24px);
-  line-height: 1.38;
-  margin-top: 12px;
-}
-.alx .cap .hint {
-  margin-top: 20px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
+.alx .cap .lbl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
   font:
     500 11.5px ui-monospace,
     "SF Mono",
     Menlo,
     monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--gray);
-  letter-spacing: 0.02em;
 }
-.alx .cap .hint kbd {
+.alx .cap .lbl .res {
+  height: 22px;
+  font:
+    600 11.5px -apple-system,
+    system-ui,
+    sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.alx .cap .two {
+  margin: 0;
+  font-size: clamp(22px, 2.05vw, 30px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  color: var(--title-gray, var(--gray2));
+  text-wrap: pretty;
+}
+.alx .cap .two b {
+  color: var(--ink);
+  font-weight: 650;
+}
+/* short laptop screens: the same words, a size down */
+@media (max-height: 820px) {
+  .alx .cap {
+    gap: 14px;
+  }
+  .alx .cap .two {
+    font-size: clamp(20px, 1.8vw, 25px);
+  }
+  .alx .cap .pts li {
+    font-size: 13.5px;
+  }
+  .alx .cap .acts .go {
+    height: 40px;
+    padding: 0 18px;
+  }
+}
+/* what it is, what I did, what came of it: short lines, each on a little handle like the
+   layer bullets in the detail pages */
+.alx .cap .pts {
+  margin: -4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 7px;
+}
+.alx .cap .pts li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 14.5px;
+  line-height: 1.42;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.alx .cap .pts li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 1.5px;
+  background: var(--c);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.alx .cap .spec {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 13px;
+  color: var(--gray);
+}
+.alx .cap .spec b {
+  font-weight: 400;
+  opacity: 0.6;
+}
+.alx .cap .live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #13843a;
+  font-weight: 600;
+}
+html[data-theme="dark"] .alx .cap .live {
+  color: #5fdc83;
+}
+.alx .cap .live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34c759;
+  box-shadow: 0 0 0 3px rgb(52 199 89 / 18%);
+}
+/* a few more shots, dropped on the canvas like prints */
+.alx .cap .shots {
+  display: flex;
+  padding-left: 6px;
+}
+.alx .cap .shots img {
+  width: 92px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: 50% 30%;
+  border: 4px solid var(--surface);
+  border-radius: 6px;
+  margin-left: -10px;
+  background: var(--ph);
+  box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.45s var(--lift);
+}
+.alx .cap .shots img:nth-child(1) {
+  transform: rotate(-5deg);
+}
+.alx .cap .shots img:nth-child(2) {
+  transform: rotate(2deg) translateY(-4px);
+}
+.alx .cap .shots img:nth-child(3) {
+  transform: rotate(-1.5deg) translateY(2px);
+}
+.alx .cap .shots:hover img {
+  transform: rotate(0) translateY(-3px);
+}
+.alx .cap .acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding-top: 2px;
+}
+.alx .cap .acts a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.alx .cap .acts a span {
+  transition: transform 0.35s var(--lift);
+}
+.alx .cap .acts a:hover span {
+  transform: translateX(3px);
+}
+.alx .cap .acts .go {
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--btn);
+  color: var(--btn-ink);
+  transition: transform 0.35s var(--lift);
+}
+.alx .cap .acts .go:hover {
+  transform: translateY(-1px);
+}
+.alx .cap .acts .ext {
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--line);
+}
+.alx .cap .acts .ext:hover {
+  text-decoration-color: currentColor;
+}
+.alx .cap .hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font:
+    500 11px ui-monospace,
+    "SF Mono",
+    Menlo,
+    monospace;
+  color: var(--gray);
+  white-space: nowrap;
+  opacity: 0.85;
+}
+.alx .cap .hint span {
+  margin-right: 12px;
+  margin-left: 3px;
+}
+.alx .cap .hint button {
   font: inherit;
-  padding: 1px 5px;
+  color: var(--ink);
+  min-width: 22px;
+  height: 20px;
+  padding: 0 5px;
   border-radius: 4px;
   box-shadow: inset 0 0 0 1px var(--line);
-  margin: 0 2px;
+  transition: background 0.15s;
+}
+.alx .cap .hint button:hover {
+  background: var(--hover);
+}
+.alx .cap .hint button:focus-visible {
+  outline: 2px solid var(--fig);
+  outline-offset: 1px;
+}
+/* the file's own comment opens when you're looking at it */
+.alx .frame.on .pin em {
+  max-width: 260px;
+  padding: 0 9px 0 8px;
 }
 .alx .zoom {
   position: absolute;
@@ -1170,20 +1412,45 @@ html[data-theme="dark"] .fp-zoom {
   color: var(--fig);
 }
 @media (max-width: 760px) {
+  /* narrow canvases: the words sit under the frame, over a soft fade of the canvas */
   .alx .cap {
-    left: 4%;
-    right: 4%;
+    left: 0;
+    right: 0;
+    top: 58%;
     width: auto;
-    top: auto;
-    bottom: 46px;
     translate: none;
-    padding: 16px 18px;
+    gap: 12px;
+    padding: 0 6%;
   }
-  .alx .cap .hint {
+  .alx .cap .two {
+    font-size: 21px;
+  }
+  .alx .zoomed .frame:not(.on) {
+    visibility: hidden;
+  }
+  .alx .cap .spec,
+  .alx .cap .shots,
+  .alx .cap .hint,
+  .alx .cap .pts li:nth-child(n + 3) {
+    display: none;
+  }
+  .alx .cap .pts li {
+    font-size: 14px;
+  }
+  .alx .cap .acts .go {
+    height: 40px;
+    padding: 0 18px;
+    font-size: 14px;
+  }
+  .alx .zoomed .zoom {
     display: none;
   }
 }
 @media (max-width: 600px) {
+  /* no room to the photo's right on a phone: the pin lands nearer its middle */
+  .alx .hpin {
+    left: 22%;
+  }
   .alx .canvas {
     display: none;
   }
@@ -1693,10 +1960,17 @@ html[data-preloader-ready="false"] .alx .hero > *,
 html[data-preloader-ready="false"] .alx .drawer {
   opacity: 0;
 }
+/* back from About: the header stays, the rest rises back in */
+.alx.entering .hero > *,
+.alx.entering .drawer {
+  opacity: 0;
+}
 @media (prefers-reduced-motion: reduce) {
   html[data-preloader-ready="false"] .alx header,
   html[data-preloader-ready="false"] .alx .hero > *,
-  html[data-preloader-ready="false"] .alx .drawer {
+  html[data-preloader-ready="false"] .alx .drawer,
+  .alx.entering .hero > *,
+  .alx.entering .drawer {
     opacity: 1;
   }
 }
