@@ -746,10 +746,13 @@ export function mountHome(root, { folders, email, navigate }) {
     for (const el of parts) el.style.opacity = "0";
     root.classList.remove("entering");
     $(".drawer").style.opacity = 1;
+    // from an explicit start below the drawer, so they only ever rise (never drop in from
+    // wherever they were laid out)
+    const below = col.offsetHeight + 40;
     const lands = units.map((u, i) =>
       animate(
         u,
-        { y: baseY() },
+        { y: [below, baseY()] },
         { ...spring(170, 25), delay: (quick ? 0.16 : 0.52) + i * 0.06 },
       ),
     );
@@ -772,8 +775,19 @@ export function mountHome(root, { folders, email, navigate }) {
   on(hpin, "click", () => hpin.classList.toggle("open"));
   if (intro)
     on(window, PRELOADER_READY_EVENT, () => runIntro(), { once: true });
-  else if (back) runIntro(true);
-  else {
+  else if (back) {
+    // straight after the page swap the drawer may not be laid out yet (zero height); wait
+    // for real sizes, lay the folders out again, then rise in
+    let tries = 0;
+    const go = () => {
+      if (!alive) return;
+      if (!col.offsetHeight && tries++ < 20) return requestAnimationFrame(go);
+      layoutTabs();
+      for (let i = 0; i < cv.length; i++) layoutCanvas(i);
+      runIntro(true);
+    };
+    requestAnimationFrame(go);
+  } else {
     root.classList.remove("entering");
     later(landPin, 700);
   }

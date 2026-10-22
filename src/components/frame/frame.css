@@ -810,7 +810,7 @@ body:has(.alx-page) {
 }
 @media (max-width: 860px) {
   .fp {
-    width: calc(100% - 40px);
+    width: calc(100% - 48px);
   }
   .fp-head {
     padding-top: 24px;
@@ -875,6 +875,22 @@ body:has(.alx-page) {
 @media (max-width: 600px) {
   .fp-author span {
     display: none;
+  }
+  /* the folder tab on its own line, the label under it on one line */
+  .fp-kicker {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .alx .fp-label {
+    letter-spacing: 0.02em;
+    row-gap: 4px;
+  }
+  .fp-label i {
+    margin: 0 6px;
+  }
+  .fp-label span {
+    white-space: nowrap;
   }
 }
 

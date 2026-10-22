@@ -1660,11 +1660,11 @@ html[data-theme="dark"] .alx .cap .live {
   }
   .alx .para {
     font-size: 16px;
-    line-height: 1.65;
+    line-height: 1.85;
     margin-top: 42px;
   }
   .alx .pill {
-    height: 1.5em;
+    height: 1.48em;
   }
   .alx .links {
     margin-top: 26px;
@@ -1675,7 +1675,7 @@ html[data-theme="dark"] .alx .cap .live {
     top: 64px;
   }
   .alx .col {
-    width: calc(100% - 16px);
+    width: calc(100% - 20px);
   }
   .alx .tab small {
     display: none;
@@ -1684,11 +1684,11 @@ html[data-theme="dark"] .alx .cap .live {
     padding: 0 13px;
   }
   .alx .body {
-    padding: 6px 6px 0;
+    padding: 8px 8px 0;
     border-radius: 20px 20px 0 0;
   }
   .alx .band {
-    padding: 10px 10px 14px 12px;
+    padding: 12px 10px 16px 14px;
   }
   .alx .band .blurb {
     font-size: 16px;
@@ -1703,17 +1703,17 @@ html[data-theme="dark"] .alx .cap .live {
   /* inside: no lead + list on a phone, just one column of prints you scroll */
   .alx .grid {
     grid-template-columns: minmax(0, 1fr);
-    padding: 18px 16px 32px;
+    padding: 24px 22px 44px;
     gap: 0;
   }
   .alx .rest-list {
-    gap: 30px;
+    gap: 44px;
   }
   .alx .row {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 16px;
     padding: 0;
     border-radius: 0;
     outline: none !important;
@@ -1734,14 +1734,14 @@ html[data-theme="dark"] .alx .cap .live {
   }
   .alx .row .t {
     font-size: 18px;
-    line-height: 1.38;
+    line-height: 1.45;
     letter-spacing: -0.018em;
     -webkit-line-clamp: unset;
     display: block;
   }
   .alx .row .rm {
     font-size: 13px;
-    margin-top: 8px;
+    margin-top: 10px;
   }
 }
 
