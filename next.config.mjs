@@ -14,6 +14,14 @@ const nextConfig = {
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+  async rewrites() {
+    return [
+      {
+        source: "/tiktok/s/:token",
+        destination: "https://good-ptarmigan-752.convex.site/slides/:token",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
